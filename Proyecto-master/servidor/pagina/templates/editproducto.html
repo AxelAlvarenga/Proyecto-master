@@ -1,0 +1,79 @@
+{%extends 'cabecera.html'%}
+{% load static %}
+{%block cabecera%}
+    <form action="{% url 'editproducto' producto_actual %}" id="formCliente" onsubmit="notifySuccess(this); return false" method="POST" >
+        {% csrf_token %}
+        <div class="forma">
+            <label for="ingresar-nombre">Añadir nombre del producto</label>
+            <input type="text" class="form-control" id="formGroupExampleInput1" name="nombre_productos" value="{{datos_act.nombre_productos}}">
+
+
+            <label for="ingresar-codigo">Añadir codigo del producto</label>
+            <input type="text" class="form-control" id="formGroupExampleInput2" name="codigo_productos" value="{{datos_act.codigo_productos}}">
+
+            <label for="ingresar-precio-compra">Añadir precio de compra</label>
+            <input type="text" class="form-control" id="formGroupExampleInput3" name="preciocompra_productos" value="{{datos_act.preciocompra_productos}}" >
+
+            <label for="ingresar-precio-compra">Añadir precio de venta</label>
+            <input type="text" class="form-control" id="formGroupExampleInput4" name="precioventa_productos" value="{{datos_act.precioventa_productos}}" >
+
+            <label for="ingresar-cantidad">Añadir cantidad</label>
+            <input type="text" class="form-control" id="formGroupExampleInput5" name="cantidad_productos" value="{{datos_act.cantidad_productos}}">
+            <div class="card-header">
+                seleccionar categoria de producto
+            </div>
+            <select class="dataTable-selector form-select" name="categoria_productos">
+                {% for categoria in listacategoria%}
+                <option value="{{categoria.codigo_categoria}}" {% if categoria.codigo_categoria == datos_act.categoria_productos %} selected {% endif %}>
+                    {{categoria.nombre_categoria}}
+                </option>
+                {% endfor %}
+            </select>
+            <div class="card-header">
+                seleccionar proveedor
+            </div>
+            
+            <select class="dataTable-selector form-select" name="proveedor">
+                {% for lista in listaproveedor%}
+                <option value="{{lista.codigo_proveedor}}" {% if lista.codigo_proveedor == datos_act.nombre_proveedor_id %} selected {% endif %}>
+                    {{lista.nombre_proveedor}}
+                </option>
+                {% endfor %}
+            </select>
+
+
+
+        </div>
+        <footer>
+            <div class="footer clearfix mb-0 text-muted">
+               
+                    <button class="guardar-producto" onclick="checker()">
+                        Guardar Producto
+                    </button>
+            
+
+            </div>
+        </footer>
+    </form>
+    <a href="{%url 'cargar_categoria' 0 %}">
+        <button class="añadir-categoria" onclick="" >
+                añadir categoria
+            <i class="fas fa-edit"></i>
+        </button>
+    </a>
+    </body>
+
+    </html>
+
+      
+    </script>   
+    <script>
+        function checker() {
+            var result = confirm('Estas seguro que quieres guardar este producto?');
+            if (result == false) {
+                event.preventDefault();
+            }
+        }
+    </script>
+
+    {%endblock%}

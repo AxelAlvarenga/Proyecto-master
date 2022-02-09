@@ -1,0 +1,98 @@
+
+{%extends 'cabecera.html'%}
+{% load static %}
+{%block cabecera%}
+
+
+    <form action="{% url 'modusuarios' usuario_actual  %}" method="POST">
+        {% csrf_token %}
+        <div class="forma">
+  
+
+            <label for="ingresar-nombre">Nombre completo </label>
+            <input type="text" class="form-control" id="formGroupExampleInput1" name="nombre_completo_usuario" value="{{datos_act.nombre_completo_usuario}}">
+
+
+            <label for="ingresar-codigo">Nombre </label>
+            <input type="text" class="form-control" id="formGroupExampleInput2" name="nombre_usuario" value="{{datos_act.nombre_usuario}}">
+
+            <label for="ingresar-precio-compra">contraseña</label>
+            <input type="text" class="form-control" id="formGroupExampleInput3" name="password_usuario" value="{{datos_act.password_usuario}}">
+            <select class="dataTable-selector form-select" name="tipo_usuario">
+                {%if parameters.datos_act.tipo_usuario == 1 %}
+                <option value="1" id="opcion_select" selected>Administrador</option>
+                <option value="2" id="opcion_select">Empleado</option>
+                {% else %}
+                <option value="1" id="opcion_select">Administrador</option>
+                <option value="2" id="opcion_select" selected>Empleado</option>
+                {% endif %}
+            </select>
+        </div>
+        <footer>
+            
+                <div class="busqueda">
+                    <div>
+                        <label for="ingresar-nombre">Buscar usuario </label>
+                        <input type="text" class="clienteptex" id="buscar"> <!-- ID de "buscar" para realizar busqueda-->
+                    </div>
+                </div>
+                <div class="footer clearfix mb-0 text-muted">
+                    
+                        <button class="guardar-producto" onclick="return confirm('Estas seguro que quieres guardar este usuario');" type="submit">
+                            Guardar usuario
+                        </button>
+
+                </div>
+            
+        </footer>
+    </form>
+    <div class="card-body">
+        <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+            <div class="dataTable-top">
+                <div class="dataTable-dropdown">
+                    <table class="table table-striped dataTable-table" id="tabla">
+                        <thead>
+                            <tr>
+                                <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                    class="dataTable-sorter">Codigo Usuario</a></th>
+                                <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                        class="dataTable-sorter">Nombre completo</a></th>
+                                <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                        class="dataTable-sorter">Nombre</a></th>
+
+                            </tr>
+                        </thead>
+
+                        {%for lista in listatabla%}
+                        <tr>
+
+                            <td>{{lista.cod_usuario}}</td>
+                            <td>{{lista.nombre_completo_usuario}}</td>
+                            <td>{{lista.nombre_usuario}}</td>
+                            
+
+                            <td><th data-sortable="" style="width:11.125%;"><a href="{%url 'modusuarios' lista.cod_usuario %}"
+                                    class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                    data-original-title="Editar usuario">
+                                    Editar
+                                </a></td>
+                            <td>
+                                 <th data-sortable="" style="width:10.125%;"><a onclick="return confirm('Estas seguro que quieres borrar este usuario');" href="{%url 'borusuario' lista.cod_usuario %}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Delete user">
+                                            
+                                    borrar
+                                </a></td> 
+                            </td>    
+
+
+
+                                
+                        </tr>
+                        {%endfor%}
+                    </table>
+                </div>
+            </div>
+            </body>
+
+            </html>
+            <script src="{% static 'assets/js/search.js' %}"></script> <!-- Script para busqueda-->
+            {%endblock%}

@@ -1,0 +1,59 @@
+{%extends 'cabecera.html'%}
+{% load static %}
+{%block cabecera%}
+<form class="abrir-caja-input"  action="{% url 'abrir_caja' caja_actual %}" id="formCliente" method="POST">  
+<div>
+    <div>
+        {% csrf_token %} 
+        <input style="display: none;" name="nombredelusuario" value="{{nombre_completo}}">>
+
+
+        <label for="ingresar-nombre"> Ingresar monto para abrir la caja </label>
+        <input type="text" class="clienteptex" name="entrada_caja" value="{{datos_act.entrada_caja}}"> 
+        
+        {% for lista in listausuario %}
+        <input value="{{lista.cod_usuario}}" {% if lista.cod_usuario == datos_act.nombre_usuario_id%} {{lista.nombre_usuario}} {% endif %} style="visibility: hidden;">
+        </input>
+        {% endfor %}
+
+        <input type="date" id="fechaActual" name="fecha_caja" value="{{datos_act.fecha_caja}}" style="visibility: hidden;">
+        <input type="text" id="currentTime"  name="hora_caja" value="{{datos_act.hora_caja}}" style="visibility: hidden;">
+        <input style="display: none;" name="tipo_mov" value="2" type="number">
+               
+    </div>
+    <button class="abrir-caja" onclick="checker()"  type="submit"> 
+        abrir
+    </button>
+
+    
+
+</div>
+</form>
+<script>
+    window.onload = function () {
+        var fecha = new Date(); //Fecha actual
+        var mes = fecha.getMonth() + 1; //obteniendo mes
+        var dia = fecha.getDate(); //obteniendo dia
+        var ano = fecha.getFullYear(); //obteniendo año
+        if (dia < 10)
+            dia = '0' + dia; //agrega cero si el menor de 10
+        if (mes < 10)
+            mes = '0' + mes //agrega cero si el menor de 10
+        document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
+    } 
+</script>
+ 
+<script>
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    document.getElementById("currentTime").value = time;
+</script>
+<script>
+    function checker() {
+        var result = confirm('Estas seguro que quieres abrir la caja?');
+        if (result == false) {
+            event.preventDefault();
+        }
+    }
+</script>
+{%endblock%}

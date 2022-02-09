@@ -1,0 +1,60 @@
+{%extends 'cabecera.html'%}
+{% load static %}
+{%block cabecera%}
+<form action="{% url 'retirar_caja' caja_actual %}" id="formCliente" method="POST">
+    {% csrf_token %} 
+    <input style="display: none;" name="nombredelusuario" value="{{nombre_completo}}">
+<div>
+    <div class="forma">
+        <label for="ingresar-codigo">Ingresar monto no superior al actual: </label> 
+        <input type="text" class="form-control" id="formGroupExampleInput2" name="salida_caja" value="{{datos_act.salida_caja}}" >
+        <label for="ingresar-codigo">Ingresar motivo(max 50 caract.)</label>
+        <input type="text" class="form-control" id="formGroupExampleInput2" name="motivo_caja" value="{{datos_act.motivo_caja}}">
+
+
+        {% for lista in listausuario %}
+        <input value="{{lista.cod_usuario}}" {% if lista.cod_usuario == datos_act.nombre_usuario_id%} {{lista.nombre_usuario}} {% endif %} style="visibility: hidden;">
+        </input>
+        {% endfor %}
+
+        <input type="date" id="fechaActual" name="fecha_caja" value="{{datos_act.fecha_caja}}" style="visibility: hidden;">
+        <input type="text" id="currentTime"  name="hora_caja" value="{{datos_act.hora_caja}}" style="visibility: hidden;">
+        <input style="display: none;" name="tipo_mov" value="1" type="number">
+        <a >
+            <button  class="guardar-producto1" onclick="checker()" type="submit"> 
+                Retirar dinero
+            </button>
+        </a>
+    </div>
+    
+</div>
+</form>
+<script>
+    window.onload = function () {
+        var fecha = new Date(); //Fecha actual
+        var mes = fecha.getMonth() + 1; //obteniendo mes
+        var dia = fecha.getDate(); //obteniendo dia
+        var ano = fecha.getFullYear(); //obteniendo año
+        if (dia < 10)
+            dia = '0' + dia; //agrega cero si el menor de 10
+        if (mes < 10)
+            mes = '0' + mes //agrega cero si el menor de 10
+        document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
+    } 
+</script>
+ 
+<script>
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    document.getElementById("currentTime").value = time;
+</script>
+<script>
+    function checker() {
+        var result = confirm('Estas seguro que quieres retirar ese monto?');
+        if (result == false) {
+            event.preventDefault();
+        }
+    }
+</script>
+
+{%endblock%}

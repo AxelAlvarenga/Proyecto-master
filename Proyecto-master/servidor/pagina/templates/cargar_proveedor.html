@@ -1,0 +1,107 @@
+{%extends 'cabecera.html'%}
+{% load static %}
+{%block cabecera%}
+    <form action="{% url 'cargar_proveedor' proveedor_actual %}" onsubmit="notifySuccess(this); return false" method="POST">
+        {% csrf_token %}
+        <div class="forma">
+            <label for="ingresar-codigo">Nombre completo</label>
+            <input type="text" class="form-control" id="formGroupExampleInput2" name="nombre_proveedor"
+                value="{{datos_act.nombre_proveedor}}">
+
+            <label for="ingresar-precio-compra">Ruc</label>
+            <input type="text" class="form-control" id="formGroupExampleInput4" name="ruc_proveedor"
+                value="{{datos_act.ruc_proveedor}}">
+
+            <label for="ingresar-cantidad">Telefono</label>
+            <input type="text" class="form-control" id="formGroupExampleInput5" name="Telefono_proveedor"
+                value="{{datos_act.Telefono_proveedor}}">
+
+            <label for="ingresar-cantidad">Direccion</label>
+            <input type="text" class="form-control" id="formGroupExampleInput5" name="direccion_proveedor"
+                value="{{datos_act.direccion_proveedor}}">
+
+
+        </div>
+        <footer>
+            <div class="busqueda">
+                <div>
+                    <label for="ingresar-nombre">Buscar provedor </label>
+                    <input type="text" class="clienteptex" id="buscar"> <!-- ID de "buscar" para realizar busqueda-->
+                </div>
+            </div>
+            <div class="footer clearfix mb-0 text-muted">
+
+                <button class="guardar-producto" type="submit" onclick="checker()">
+                    Guardar  proveedor
+                </button>
+
+            </div>
+        </footer>
+    </form>
+    <div class="card-body">
+        <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+            <div class="dataTable-top">
+                <div class="dataTable-dropdown">
+                    <table class="table table-striped dataTable-table" id="tabla">
+                        <thead>
+
+                            <tr>
+                                <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                        class="dataTable-sorter">Nombre</a></th>
+                                <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                        class="dataTable-sorter">Codigo</a></th>
+                                <th data-sortable="" style="width: 20.8988%;"><a href="#"
+                                        class="dataTable-sorter">RUC</a></th>
+                                <th data-sortable="" style="width: 22.1386%;"><a href="#"
+                                        class="dataTable-sorter">Telefono</a></th>
+                                <th data-sortable="" style="width: 22.1386%;"><a href="#"
+                                        class="dataTable-sorter">Direccion</a></th>
+                                <th data-sortable="" style="width: 22.1386%;"><a href="#"
+                                        class="dataTable-sorter">Acciones</a></th>
+                            </tr>
+
+                        </thead>
+
+                        {%for lista in listaproveedor%}
+                            <tr>
+
+                                <td>{{lista.nombre_proveedor}}</td>
+                                <td>{{lista.codigo_proveedor}}</td>
+                                <td>{{lista.ruc_proveedor}}</td>
+                                <td>{{lista.Telefono_proveedor}}</td>
+                                <td>{{lista.direccion_proveedor}}</td>
+
+                                <td data-sortable="" style="width:11.125%;"><a
+                                        href="{%url 'cargar_proveedor' lista.codigo_proveedor%}"
+                                        class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                        data-original-title="Editar usuario">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'borrarproveedor' lista.codigo_proveedor %}"
+                                    onclick="return confirm('Estas seguro que quieres borrar este proveedor');"
+                                        class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                        data-original-title="borrar registro"><i class="fas fa-trash"></i></a>
+                                </td>
+
+
+
+
+
+                            </tr>
+                        {%endfor%}
+                    </table>
+                </div>
+            </div>
+            </body>
+
+            </html>
+            <script>
+                function checker() {
+                    var result = confirm('Estas seguro que quieres guardar este proveedor?');
+                    if (result == false) {
+                        event.preventDefault();
+                    }
+                }
+            </script>
+            <script src="{% static 'assets/js/search.js' %}"></script> <!-- Script para busqueda-->
+{%endblock%}

@@ -1,0 +1,97 @@
+{%extends 'cabecera.html'%}
+{% load static %}
+{%block cabecera%}
+<form action="{% url 'editclientes' parameters.cliente_actual %}" id="formCliente" onsubmit="notifySuccess(this); return false" method="POST">
+    {% csrf_token %}
+    <div class="forma">
+        <label for="ingresar-nombre">Numero de cedula</label>
+        <input type="text" class="form-control" id="formGroupExampleInput1" name="codigo_cliente"
+            value="{{parameters.datos_act.codigo_cliente}}">
+
+
+        <label for="ingresar-nombre">Nombre completo</label>
+        <input type="text" class="form-control" id="formGroupExampleInput1" name="nombre_cliente"
+            value="{{parameters.datos_act.nombre_cliente}}">
+
+
+        <label for="ingresar-codigo">Número de telefono</label>
+        <input type="text" class="form-control" id="formGroupExampleInput2" name="telefonos_cliente"
+            value="{{parameters.datos_act.telefono_cliente}}">
+
+        <label for="ingresar-precio-compra">Direccion</label>
+        <input type="text" class="form-control" id="formGroupExampleInput3" name="direccion_cliente"
+            value="{{parameters.datos_act.direccion_cliente}}">
+
+    </div>
+    <footer>
+
+        <div class="busqueda">
+            <div>
+                <label for="ingresar-nombre">Buscar cliente </label>
+                <input type="text" class="clienteptex" id="buscar"> <!-- ID de "buscar" para realizar busqueda-->
+            </div>
+        </div>
+        
+        <button class="guardar-producto1" onclick=""  type="submit">
+                Guardar cliente
+        </button>
+    </footer>
+    
+</form>
+    <div class="card-body" style="overflow-y:auto">
+                <table class="table table-striped dataTable-table" id="tabla">
+                    <thead>
+                        <tr>
+                            <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                    class="dataTable-sorter">Cedula</a></th>
+                            <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                    class="dataTable-sorter">Nombre</a></th>
+                            <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                    class="dataTable-sorter">telefono</a></th>
+                            <th data-sortable="" style="width: 20.8988%;"><a href="#"
+                                    class="dataTable-sorter">direccion</a></th>
+                            
+                        </tr>
+                    </thead>
+
+                    {%for lista in parameters.listaclientes%}
+                    <tr>
+
+                        <td>{{lista.codigo_cliente}}</td>
+                        <td>{{lista.nombre_cliente}}</td>
+                        <td>{{lista.telefono_cliente}}</td>
+                        <td>{{lista.direccion_cliente}}</td>
+
+                        <td>
+                        <th data-sortable="" style="width:23.2012%;"><a
+                                href="{%url 'editclientes' lista.codigo_cliente%}"
+                                class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                data-original-title="Editar usuario">
+                                
+                                <i class="fas fa-user-edit"></i>
+                                
+                            </a></td>
+                        <td>
+                        <th data-sortable="" style="width:23.2012%;"><a
+                                onclick="return confirm('Estas seguro que quieres borrar este usuario');"
+                                href="{%url 'borrarcliente' lista.codigo_cliente %}"
+                                class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                data-original-title="Delete user">
+                               
+                                <i class="fas fa-user-minus"></i>
+                                
+                            </a></td>
+                            </td>
+                    </tr>
+                    {%endfor%}
+                </table>
+    </div>
+          
+    <div id="notification-area" style="display: none;">
+            
+    </div>
+    <script src="{% static 'assets/js/search.js' %}"></script> <!-- Script para busqueda-->
+    <script src="{% static 'assets/js/alerta.js' %}"></script>
+</body>
+</html>
+{%endblock%}

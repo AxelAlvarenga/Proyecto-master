@@ -1,0 +1,95 @@
+{%extends 'cabecera.html'%}
+{% load static %}
+{%block cabecera%}
+    
+        <a href="{%url 'editproducto' 0 %}">
+            <button class="agregar_producto">
+                <i class="fas fa-arrow-circle-left"></i>
+            </button>
+        </a>
+
+    
+    <form action="{% url 'cargar_categoria' categoria_actual %}" onsubmit="notifySuccess(this); return false" method="POST">
+        {% csrf_token %}
+        <div class="forma">
+            <label for="ingresar-codigo">Nombre categoria</label>
+            <input type="text" class="form-control" id="formGroupExampleInput2" name="nombre_categoria"
+                value="{{datos_act.nombre_categoria}}">
+
+
+
+
+        </div>
+        <footer>
+            <div class="busqueda">
+                <div>
+                    <label for="ingresar-nombre">Buscar categoria </label>
+                    <input type="text" class="clienteptex" id="buscar"> <!-- ID de "buscar" para realizar busqueda-->
+                </div>
+            </div>
+            <div class="footer clearfix mb-0 text-muted">
+            <a> 
+                <button class="guardar-producto" type="submit" onclick="checker()">
+                    Guardar  categoria
+                </button>
+            </a>
+
+            </div>
+        </footer>
+    </form>
+    <div class="card-body">
+        <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+            <div class="dataTable-top">
+                <div class="dataTable-dropdown">
+                    <table class="table table-striped dataTable-table" id="tabla">
+                        <thead>
+
+                            <tr>
+                                <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                        class="dataTable-sorter">Nombre</a></th>
+                                <th data-sortable="" style="width: 23.2012%;"><a href="#"
+                                        class="dataTable-sorter">Codigo</a></th>
+
+                        </thead>
+
+                        {%for lista in listacategoria%}
+                            <tr>
+
+                                <td>{{lista.nombre_categoria}}</td>
+                                <td>{{lista.codigo_categoria}}</td>
+
+
+                                <td data-sortable="" style="width:11.125%;"><a
+                                        href="{%url 'cargar_categoria' lista.codigo_categoria%}"
+                                        class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                        data-original-title="Editar usuario">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'borrarcategoria' lista.codigo_categoria %}"
+                                    onclick="return confirm('Estas seguro que quieres borrar este proveedor');"
+                                        class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                        data-original-title="borrar registro"><i class="fas fa-trash"></i></a>
+                                </td>
+
+
+
+
+
+                            </tr>
+                        {%endfor%}
+                    </table>
+                </div>
+            </div>
+            </body>
+
+            </html>
+            <script>
+                function checker() {
+                    var result = confirm('Estas seguro que quieres guardar este proveedor?');
+                    if (result == false) {
+                        event.preventDefault();
+                    }
+                }
+            </script>
+            <script src="{% static 'assets/js/search.js' %}"></script> <!-- Script para busqueda-->
+{%endblock%}

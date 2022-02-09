@@ -1,0 +1,38 @@
+#notification-area {
+  position:fixed;
+  top:0px;
+  right:10px;
+  width:250px;
+  height:auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+#notification-area .notification {
+  position:fixed;
+  top:0px;
+  right:10px;
+  width:250px;
+  height:auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  color: white;
+  padding: 1em;
+  margin-top: 1em;
+}
+@keyframes showNotification {
+  to {
+    opacity:1;
+    left:0px;
+  }
+}
+#notification-area .notification.success {
+  background:#389838;
+}
+#notification-area .notification.error {
+  background:orangered;
+}
+#notification-area .notification.info {
+  background:#00acee;
+}

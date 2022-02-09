@@ -1,0 +1,65 @@
+{% load static %}
+
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> ARM Admin </title>
+
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/css/font_awesome/css/all.min.css'%}">
+
+    <link rel="stylesheet" href="{% static 'assets/vendors/chartjs/Chart.min.css'%}">
+
+    <link rel="stylesheet" href="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/css/app.css'%}">
+    <link rel="shortcut icon" href="{% static 'assets/images/ARMLOGO.png'%}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'assets/css/alerta.css'%}">
+
+</head>
+
+<body>
+    {%include "./Menu.html"%}
+    <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+    </div>
+    </div>
+    <div id="main">
+        <nav class="navbar navbar-header navbar-expand navbar-light">
+            <a class="sidebar-toggler" href="#"><span class="navbar-toggler-icon"></span></a>
+            <button class="btn navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav d-flex align-items-center navbar-light ml-auto">
+               
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                            <div class="avatar mr-1">
+                                <img src="{% static 'assets/images/avatar/avatar-1.jpg'%}" alt="" srcset="">
+                            </div>
+                            <div class="d-none d-md-block d-lg-inline-block">Hola, {{nombre_completo}}</div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="{% url 'modusuarios' 0 %}"><i data-feather="settings"></i> Configuración</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'salir'  %}"><i data-feather="log-out"></i>Cerrar sesión</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+          
+        </nav>
+        
+        <script src="{% static 'assets/js/feather-icons/feather.min.js'%}"></script>
+        <script src="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js'%}"></script>
+        <script src="{% static 'assets/js/app.js'%}"></script>
+        <script src="{% static 'assets/vendors/chartjs/Chart.min.js'%}"></script>
+        <script src="{% static 'assets/vendors/apexcharts/apexcharts.min.js'%}"></script>
+        <script src="{% static 'assets/js/pages/dashboard.js'%}"></script>
+        <script src="{% static 'assets/js/main.js'%}"></script>
+
+        {%block cabecera%}
+        {%endblock%}
