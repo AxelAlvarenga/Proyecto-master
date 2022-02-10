@@ -40,133 +40,131 @@
 
         margin: 0;
     }
+    .container-fluid-1{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+        height: auto;
+        grid-gap: 2em;
+    }
 </style>
 
 <form>
-
-    <div class="clientept">
-        <div>
-            <label for="ingresar-nombre">Cedula de cliente </label>
-            <input type="text" class="clienteptex"  onfocusout="traerCliente(this)">
-          
-
+    <div class="container">
+        <div class="clientept">
+            <div>
+                <label for="ingresar-nombre">Cedula de cliente </label>
+                <input type="text" class="clienteptex"  onfocusout="traerCliente(this)">
+              
+    
+            </div>
+            <div class="forma">
+                <label><input type="checkbox" id="cbox1" value="first_checkbox"> Cliente casual</label>
+    
+            </div>
+    
+    
         </div>
-        <div class="forma">
-            <label><input type="checkbox" id="cbox1" value="first_checkbox"> Cliente casual</label>
-
+        <div class="clientept">
+            <label for="ingresar-nombre" id="nombre_cliente">Nombre del Cliente: </label>
+    
         </div>
-
-
-    </div>
-    <div class="clientept">
-        <label for="ingresar-nombre" id="nombre_cliente">Nombre del Cliente: </label>
-
-    </div>
-    <div class="busqueda">
-        <div>
-            <label for="ingresar-nombre">Buscar producto </label>
-            <input type="text" class="clienteptex" id="buscar"> <!-- ID de "buscar" para realizar busqueda-->
+        <div class="busqueda">
+            <div>
+                <label for="ingresar-nombre">Buscar producto </label>
+                <input type="text" class="clienteptex" id="buscar"> <!-- ID de "buscar" para realizar busqueda-->
+            </div>
         </div>
-    </div>
-
-    <div class="alineacion">
-
-
-
-
-        <div class="card-body" style="overflow-y: auto;">
-
-            <table class="table table-striped dataTable-table" id="tabla" style="width:100%">
-                <!-- ID de "tabla" para realizar busqueda-->
-                <thead>
-                    <tr>
-                        <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">Nombre</a>
+            <div class="container-fluid-1">
+                <div class="card-body" style="overflow-y:auto" >
+    
+                    <table class="table table-striped dataTable-table" id="tabla" |>
+                        <!-- ID de "tabla" para realizar busqueda-->
+                        <thead>
+                            <tr>
+                                <th><a href="#" class="dt">Nombre</a>
+                                </th>
+                                <th ><a href="#" class="dt">Precio</a>
+                                </th>
+                                <th><a href="#" class="dt">ingresar
+                                        Cantidad</a></th>
+                            </tr>
+                        </thead>
+        
+        
+                        {%for lista in listatabla%}
+                        <tr>
+                            <td style="display: none;">{{lista.codigo_productos}}</td>
+                            <td>{{lista.nombre_productos}}</td>
+                            <td>{{lista.precioventa_productos}}</td>
+                            <td><input id="number" type="number" value="{{lista.cantidad_productos}}" max="{{lista.cantidad_productos}}" style="width: 3em;" onclick="if(this.value=='{{lista.cantidad_productos}}') this.value=''" onblur="if(this.value=='') this.value='{{lista.cantidad_productos}}'" ></td>
+                            <th ><a href="{%url 'editproducto' lista.codigo_productos %}"
+                                    class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                    data-original-title="Edit user">
+        
+                                    Añadir al carro
+                                </a>
+        
+        
+        
+        
+        
+        
+                        </tr>
+        
+                        {%endfor%}
+                    </table>
+        
+                </div>
+                <div class="contenedorfactura">
+        
+                    <table class="table table-striped dataTable-table" id="table2" style="width:1%">
+                        <thead>
+        
+                            <tr>
+                                <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">Nombre</a>
+                                </th>
+                                <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">cantidad</a>
+                                </th>
+                                <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">subtotal</a>
+                                </th>
+                            </tr>
+        
+                        </thead>
+                        <tbody>
+                            <tr>
+        
+                            </tr>
+                        </tbody>
+                        <tr>
+                            
+                                
+                            
+                        </tr>
+                        <th>
+                            <br>
+                            <a href="#" class="subtotal" style="margin-top: 1em;">Total a pagar : </a>
                         </th>
-                        <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">Precio</a>
-                        </th>
-                        <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">ingresar
-                                Cantidad</a></th>
-                    </tr>
-                </thead>
-
-
-                {%for lista in listatabla%}
-                <tr>
-                    <td style="display: none;">{{lista.codigo_productos}}</td>
-                    <td>{{lista.nombre_productos}}</td>
-                    <td>{{lista.precioventa_productos}}</td>
-                    <td><input id="number" type="number" value="{{lista.cantidad_productos}}" max="{{lista.cantidad_productos}}" style="width: 5em;" onclick="if(this.value=='{{lista.cantidad_productos}}') this.value=''" onblur="if(this.value=='') this.value='{{lista.cantidad_productos}}'" ></td>
-                    <th data-sortable="" style="width:10.125%;"><a href="{%url 'editproducto' lista.codigo_productos %}"
-                            class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                            data-original-title="Edit user">
-
-                            Añadir al carro
-                        </a>
-
-
-
-
-
-
-                </tr>
-
-                {%endfor%}
-            </table>
-
-        </div>
-        <div class="contenedorfactura">
-
-            <table class="table table-striped dataTable-table" id="table2" style="width:1%">
-                <thead>
-
-                    <tr>
-                        <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">Nombre</a>
-                        </th>
-                        <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">cantidad</a>
-                        </th>
-                        
-                    </tr>
-
-                </thead>
-                <tbody>
-                    <tr>
-
-                    </tr>
-                </tbody>
-            </table>
-            <tr>
-                <th><a href="#" class="subtotal">Total a pagar : </a>
-                </th>
-            </tr>
-
-
-
-        </div>
-
+                    </table>
+                    
+                    
+        
+                    
+        
+                </div>
+                <div></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; margin-top: 2em; margin-left:15em;">
+                    <div><button class="Cancelar">
+                        Cancelar
+                    </button></div>
+                    <div><button class="Vender">
+                        Vender
+                    </button></div>
+                </div>
+                
+            </div>
     </div>
-    <div class="footer clearfix mb-0 text-muted">
-
-        <button class="Cancelar">
-            Cancelar
-        </button>
-
-
-    </div>
-    <div class="footer clearfix mb-0 text-muted">
-
-        <button class="Vender">
-            Vender
-        </button>
-
-
-    </div>
-
-
-
-    </div>
-    </div>
-
-
+    
 </form>
 
 

@@ -1524,6 +1524,8 @@ footer div{
 }
 
 .agregar_producto{
+
+
   color: #0d6efd;
   background: transparent;
   border: 2px solid #2d3645;
@@ -1618,11 +1620,8 @@ footer div{
 }
 .Vender{
   position:absolute;
-  left: 90%;
-  top: 87%;
   width: 10%;
   height: 5%;
-  bottom: 15;
   color: #0d6efd;
   background: transparent;
   border: 2px solid #2d3645;
@@ -1631,11 +1630,8 @@ footer div{
 }
 .Cancelar{
   position:absolute;
-  left: 79%;
-  top: 87%;
   width: 10%;
   height: 5%;
-  bottom: 15;
   color: #0d6efd;
   background: transparent;
   border: 2px solid #2d3645;
