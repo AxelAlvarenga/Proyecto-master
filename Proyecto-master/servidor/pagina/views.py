@@ -159,66 +159,72 @@ def editclientes(request, cliente_actual=0):
         return redirect('login')
 
 def reportescliente(request, cliente_actual=0):
-    listaclientes=cliente.objects.all()
-    if request.method=="GET":
-        clie_actual=cliente.objects.filter(codigo_cliente=cliente_actual).exists()
-        if clie_actual:
-            datos_cliente=cliente.objects.filter(codigo_cliente=cliente_actual).first()
-            return render(request, 'cargar_cliente.html',
-            {"datos_act":datos_cliente, "cliente_actual":cliente_actual, "titulo":"Editar Usuario" , "listaclientes":listaclientes})
-        else:
-            return render(request, "cargar_cliente.html", {"nombre_completo":request.session.get("nombredelusuario"), "cliente_actual":cliente_actual, "titulo":"Cargar Usuario" , "listaclientes":listaclientes})
+    if request.session.get("cod_usuario"):
+        listaclientes=cliente.objects.all()
+        if request.method=="GET":
+            clie_actual=cliente.objects.filter(codigo_cliente=cliente_actual).exists()
+            if clie_actual:
+                datos_cliente=cliente.objects.filter(codigo_cliente=cliente_actual).first()
+                return render(request, 'cargar_cliente.html',
+                {"datos_act":datos_cliente, "cliente_actual":cliente_actual, "titulo":"Editar Usuario" , "listaclientes":listaclientes})
+            else:
+                return render(request, "cargar_cliente.html", {"nombre_completo":request.session.get("nombredelusuario"), "cliente_actual":cliente_actual, "titulo":"Cargar Usuario" , "listaclientes":listaclientes})
 
-    if request.method=="POST":
-        if cliente_actual==0:
-            cliente_nuevo=cliente(codigo_cliente=request.POST.get('codigo_cliente'),
-            nombre_cliente=request.POST.get('nombre_cliente'),
-            telefono_cliente=request.POST.get('telefonos_cliente'),
-            direccion_cliente=request.POST.get("direccion_cliente"))
+        if request.method=="POST":
+            if cliente_actual==0:
+                cliente_nuevo=cliente(codigo_cliente=request.POST.get('codigo_cliente'),
+                nombre_cliente=request.POST.get('nombre_cliente'),
+                telefono_cliente=request.POST.get('telefonos_cliente'),
+                direccion_cliente=request.POST.get("direccion_cliente"))
 
-            cliente_nuevo.save()
-        else:
-            cliente_actual=cliente.objects.get(codigo_cliente=cliente_actual)
-            cliente_actual.nombre_cliente=request.POST.get("nombre_cliente")
-            cliente_actual.codigo_cliente=request.POST.get("codigo_cliente")
-            cliente_actual.direccion_cliente=request.POST.get("direccion_cliente")
-            cliente_actual.telefono_cliente=request.POST.get("telefonos_cliente")
+                cliente_nuevo.save()
+            else:
+                cliente_actual=cliente.objects.get(codigo_cliente=cliente_actual)
+                cliente_actual.nombre_cliente=request.POST.get("nombre_cliente")
+                cliente_actual.codigo_cliente=request.POST.get("codigo_cliente")
+                cliente_actual.direccion_cliente=request.POST.get("direccion_cliente")
+                cliente_actual.telefono_cliente=request.POST.get("telefonos_cliente")
 
-            cliente_actual.save()
+                cliente_actual.save()
 
-           
-    return redirect("../reportes_cliente")
+            
+        return redirect("../reportes_cliente")
+    else:
+         return redirect('login')    
 
 
 def modusuarios(request, usuario_actual=0):
-    listatabla=Usuarios.objects.all()
-    if request.method=="GET":
-        usu_actual=Usuarios.objects.filter(cod_usuario = usuario_actual).exists()
-        if usu_actual:
-            datos_usuario=Usuarios.objects.filter(cod_usuario=usuario_actual).first()
-            return render(request, 'verusuario.html',
-            {"datos_act":datos_usuario, "usuario_actual":usuario_actual, "titulo":"Editar Usuario", "listatabla":listatabla})
+    if request.session.get("cod_usuario"):
+        listatabla=Usuarios.objects.all()
+        if request.method=="GET":
+            usu_actual=Usuarios.objects.filter(cod_usuario = usuario_actual).exists()
+            if usu_actual:
+                datos_usuario=Usuarios.objects.filter(cod_usuario=usuario_actual).first()
+                return render(request, 'verusuario.html',
+                {"datos_act":datos_usuario, "usuario_actual":usuario_actual, "titulo":"Editar Usuario", "listatabla":listatabla})
+            else:
+                return render(request, "verusuario.html", {"nombre_completo":request.session.get("nombredelusuario"), "usuario_actual":usuario_actual, "titulo":"Modificar Usuario" ,"listatabla":listatabla})
+
+        if request.method=="POST":
+            if usuario_actual==0:
+                usuario_nuevo=Usuarios(cod_usuario=request.POST.get('cod_usuario'),
+                nombre_completo_usuario=request.POST.get('nombre_completo_usuario'),
+                nombre_usuario=request.POST.get('nombre_usuario'),
+                tipo_usuario=request.POST.get('tipo_usuario'),
+                password_usuario=request.POST.get('password_usuario'))
+
+                usuario_nuevo.save()
+            else:
+                usuario_actual=Usuarios.objects.get(cod_usuario=usuario_actual)
+                usuario_actual.nombre_completo_usuario=request.POST.get("nombre_completo_usuario")
+                usuario_actual.nombre_usuario=request.POST.get("nombre_usuario")
+                usuario_actual.password_usuario=request.POST.get("password_usuario")
+                usuario_actual.tipo_usuario=request.POST.get("tipo_usuario")
+                usuario_actual.save() 
+
+            return redirect ("../modusuarios/0")
         else:
-            return render(request, "verusuario.html", {"nombre_completo":request.session.get("nombredelusuario"), "usuario_actual":usuario_actual, "titulo":"Modificar Usuario" ,"listatabla":listatabla})
-
-    if request.method=="POST":
-        if usuario_actual==0:
-            usuario_nuevo=Usuarios(cod_usuario=request.POST.get('cod_usuario'),
-            nombre_completo_usuario=request.POST.get('nombre_completo_usuario'),
-            nombre_usuario=request.POST.get('nombre_usuario'),
-            tipo_usuario=request.POST.get('tipo_usuario'),
-            password_usuario=request.POST.get('password_usuario'))
-
-            usuario_nuevo.save()
-        else:
-            usuario_actual=Usuarios.objects.get(cod_usuario=usuario_actual)
-            usuario_actual.nombre_completo_usuario=request.POST.get("nombre_completo_usuario")
-            usuario_actual.nombre_usuario=request.POST.get("nombre_usuario")
-            usuario_actual.password_usuario=request.POST.get("password_usuario")
-            usuario_actual.tipo_usuario=request.POST.get("tipo_usuario")
-            usuario_actual.save() 
-
-        return redirect ("../modusuarios/0")
+            return redirect('login')    
 
 def borusuario (request, usuario_actual):
     Usuarios.objects.filter(cod_usuario = usuario_actual).delete()
@@ -269,16 +275,18 @@ def editproveedor(request, proveedor_actual=0):
     else:
             return redirect('login')
 def editcategoria(request, categoria_actual=0):
-    listacategoria=categoria.objects.all()
-    if request.method=="GET":
-        cat_actual=categoria.objects.filter(codigo_categoria=categoria_actual).exists()
-        if cat_actual:
-            datos_categoria=categoria.objects.filter(codigo_categoria=categoria_actual).first()
-            return render(request, 'cargar_categoria.html',
-            {"datos_act":datos_categoria, "categoria_actual":categoria_actual, "titulo":"Editar Usuario","listacategoria":listacategoria})
-        else:
-            return render(request, "cargar_categoria.html", {"nombre_completo":request.session.get("nombredelusuario"), "categoria_actual":categoria_actual, "titulo":"Cargar Usuario","listacategoria":listacategoria})
-
+    if request.session.get("cod_usuario"):
+        listacategoria=categoria.objects.all()
+        if request.method=="GET":
+            cat_actual=categoria.objects.filter(codigo_categoria=categoria_actual).exists()
+            if cat_actual:
+                datos_categoria=categoria.objects.filter(codigo_categoria=categoria_actual).first()
+                return render(request, 'cargar_categoria.html',
+                {"datos_act":datos_categoria, "categoria_actual":categoria_actual, "titulo":"Editar Usuario","listacategoria":listacategoria})
+            else:
+                return render(request, "cargar_categoria.html", {"nombre_completo":request.session.get("nombredelusuario"), "categoria_actual":categoria_actual, "titulo":"Cargar Usuario","listacategoria":listacategoria})
+    else:
+            return redirect('login')
     if request.method=="POST":
         if categoria_actual==0:
             categoria_nuevo=categoria(codigo_categoria=request.POST.get('codigo_categoria'),
@@ -291,7 +299,10 @@ def editcategoria(request, categoria_actual=0):
             categoria_actual.save() 
 
         return redirect("../cargar_categoria/0")
+    else:
+            return redirect('login')
 def vender(request):
+    if request.session.get("cod_usuario"):
         listacliente=cliente.objects.all()
         listatabla=producto.objects.all()
         return render(request, "punto_venta.html",
@@ -319,97 +330,105 @@ def borrarproveedor(request,proveedor_actual ):
     return redirect("../cargar_proveedor/0")
 
 def retirar_caja(request, caja_actual=0):
-    listacaja=caja.objects.all()
-    listausuario=Usuarios.objects.all()
-    if request.method=="GET":
-        caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
-        if caj_actual:
-            datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
-            return render(request, 'retirar_caja.html',
-            {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listacaja":listacaja,"listausuario":listausuario})
+    if request.session.get("cod_usuario"):
+        listacaja=caja.objects.all()
+        listausuario=Usuarios.objects.all()
+        if request.method=="GET":
+            caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
+            if caj_actual:
+                datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
+                return render(request, 'retirar_caja.html',
+                {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listacaja":listacaja,"listausuario":listausuario})
+            else:
+                return render(request, "retirar_caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listacaja":listacaja,"listausuario":listausuario})
+
+        if request.method=="POST":
+            datos_usuario=Usuarios.objects.filter(nombre_usuario=request.POST.get('nombredelusuario')).first()
+            
+            if caja_actual==0:
+                caja_nuevo=caja(codigo_caja=request.POST.get('codigo_caja'),
+                nombre_usuario_id=getattr(datos_usuario, "cod_usuario"),
+                tipo_mov=request.POST.get('tipo_mov'),
+                motivo_caja=request.POST.get('motivo_caja'),
+                fecha_caja=request.POST.get('fecha_caja'),
+                hora_caja=request.POST.get('hora_caja'),
+                entrada_caja=request.POST.get('entrada_caja'),
+                salida_caja=request.POST.get('salida_caja'))
+                caja_nuevo.save()
+
+            return redirect("../movimiento_caja")
         else:
-            return render(request, "retirar_caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listacaja":listacaja,"listausuario":listausuario})
-
-    if request.method=="POST":
-        datos_usuario=Usuarios.objects.filter(nombre_usuario=request.POST.get('nombredelusuario')).first()
-        
-        if caja_actual==0:
-            caja_nuevo=caja(codigo_caja=request.POST.get('codigo_caja'),
-            nombre_usuario_id=getattr(datos_usuario, "cod_usuario"),
-            tipo_mov=request.POST.get('tipo_mov'),
-            motivo_caja=request.POST.get('motivo_caja'),
-            fecha_caja=request.POST.get('fecha_caja'),
-            hora_caja=request.POST.get('hora_caja'),
-            entrada_caja=request.POST.get('entrada_caja'),
-            salida_caja=request.POST.get('salida_caja'))
-            caja_nuevo.save()
-
-        return redirect("../movimiento_caja")
+            return redirect('login')
 
 
 
 
 def abrir_caja(request, caja_actual=0):
+    if request.session.get("cod_usuario"):
+        listacaja=caja.objects.all()
+        listausuario=Usuarios.objects.all()
+        if request.method=="GET":
+            caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
+            if caj_actual:
+                datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
+                return render(request, 'abrir_caja.html',
+                {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listacaja":listacaja,"listausuario":listausuario})
+            else:
+                return render(request, "abrir_caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listacaja":listacaja,"listausuario":listausuario})
 
-    listacaja=caja.objects.all()
-    listausuario=Usuarios.objects.all()
-    if request.method=="GET":
-        caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
-        if caj_actual:
-            datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
-            return render(request, 'abrir_caja.html',
-            {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listacaja":listacaja,"listausuario":listausuario})
+        if request.method=="POST":
+            datos_usuario=Usuarios.objects.filter(nombre_usuario=request.POST.get('nombredelusuario')).first()
+            
+            if caja_actual==0:
+                caja_nuevo=caja(codigo_caja=request.POST.get('codigo_caja'),
+                tipo_mov=request.POST.get('tipo_mov'),
+                nombre_usuario_id=getattr(datos_usuario, "cod_usuario"),
+                motivo_caja=request.POST.get('motivo_caja'),
+                fecha_caja=request.POST.get('fecha_caja'),
+                hora_caja=request.POST.get('hora_caja'),
+                entrada_caja=request.POST.get('entrada_caja'),
+                salida_caja=request.POST.get('salida_caja'))
+                caja_nuevo.save()
+
+            return redirect("../movimiento_caja")
         else:
-            return render(request, "abrir_caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listacaja":listacaja,"listausuario":listausuario})
-
-    if request.method=="POST":
-        datos_usuario=Usuarios.objects.filter(nombre_usuario=request.POST.get('nombredelusuario')).first()
-        
-        if caja_actual==0:
-            caja_nuevo=caja(codigo_caja=request.POST.get('codigo_caja'),
-            tipo_mov=request.POST.get('tipo_mov'),
-            nombre_usuario_id=getattr(datos_usuario, "cod_usuario"),
-            motivo_caja=request.POST.get('motivo_caja'),
-            fecha_caja=request.POST.get('fecha_caja'),
-            hora_caja=request.POST.get('hora_caja'),
-            entrada_caja=request.POST.get('entrada_caja'),
-            salida_caja=request.POST.get('salida_caja'))
-            caja_nuevo.save()
-
-        return redirect("../movimiento_caja")
+            return redirect('login')
 
 def borrarcategoria(request, categoria_actual ):
 
     categoria.objects.filter(codigo_categoria= categoria_actual).delete()
 
-    return redirect("../cargar_categoria/0") 
+    return redirect("../cargar_categoria/0")
+     
 
 def cerrar_caja(request, caja_actual=0):
-    listatabla=caja.objects.all()
-    listausuario=Usuarios.objects.all()
-    if request.method=="GET":
-        caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
-        if caj_actual:
-            datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
-            return render(request, 'caja.html',
-            {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listatabla":listatabla,"listausuario":listausuario})
-        else:
-            return render(request, "caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listatabla":listatabla,"listausuario":listausuario})
+    if request.session.get("cod_usuario"):
+        listatabla=caja.objects.all()
+        listausuario=Usuarios.objects.all()
+        if request.method=="GET":
+            caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
+            if caj_actual:
+                datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
+                return render(request, 'caja.html',
+                {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listatabla":listatabla,"listausuario":listausuario})
+            else:
+                return render(request, "caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listatabla":listatabla,"listausuario":listausuario})
 
-    if request.method=="POST":
-        datos_usuario=Usuarios.objects.filter(nombre_usuario=request.POST.get('nombredelusuario')).first()
-        
-        if caja_actual==0:
-            caja_nuevo=caja(codigo_caja=request.POST.get('codigo_caja'),
-            nombre_usuario_id=getattr(datos_usuario, "cod_usuario"),
-            tipo_mov=request.POST.get('tipo_mov'),
-            motivo_caja=request.POST.get('motivo_caja'),
-            fecha_caja=request.POST.get('fecha_caja'),
-            hora_caja=request.POST.get('hora_caja'),
-            entrada_caja=request.POST.get('entrada_caja'),
-            total_caja=request.POST.get('total_caja'),
-            salida_caja=request.POST.get('salida_caja'))
-            caja_nuevo.save()
+        if request.method=="POST":
+            datos_usuario=Usuarios.objects.filter(nombre_usuario=request.POST.get('nombredelusuario')).first()
+            
+            if caja_actual==0:
+                caja_nuevo=caja(codigo_caja=request.POST.get('codigo_caja'),
+                nombre_usuario_id=getattr(datos_usuario, "cod_usuario"),
+                tipo_mov=request.POST.get('tipo_mov'),
+                motivo_caja=request.POST.get('motivo_caja'),
+                fecha_caja=request.POST.get('fecha_caja'),
+                hora_caja=request.POST.get('hora_caja'),
+                entrada_caja=request.POST.get('entrada_caja'),
+                total_caja=request.POST.get('total_caja'),
+                salida_caja=request.POST.get('salida_caja'))
+                caja_nuevo.save()
 
-        return redirect("../movimiento_caja")   
-
+            return redirect("../movimiento_caja")   
+    else:
+            return redirect('login')
