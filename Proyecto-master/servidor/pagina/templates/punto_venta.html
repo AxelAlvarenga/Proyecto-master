@@ -1,6 +1,7 @@
 {%extends 'cabecera.html'%}
 {% load static %}
 {%block cabecera%}
+
 <style>
     * {
         box-sizing: border-box;
@@ -58,10 +59,15 @@
               
     
             </div>
-            <div class="forma">
-                <label><input type="checkbox" id="cbox1" value="first_checkbox"> Cliente casual</label>
-    
-            </div>
+            <label for="ingresar-nombre">Metodo de pago </label>
+
+            <select class="dataTable-selector form-select" name="metodo_pago_id">
+                {% for lista in listametodo%}
+                <option value="{{lista.codigo_metodo_pago}}" {% if lista.codigo_metodo_pago == datos_act.metodo_pago_id%} selected {% endif %}>
+                    {{lista.nombre_metodo_pago}}
+                </option>
+                {% endfor %}
+            </select>
     
     
         </div>
@@ -75,97 +81,136 @@
                 <input type="text" class="clienteptex" id="buscar"> <!-- ID de "buscar" para realizar busqueda-->
             </div>
         </div>
-            <div class="container-fluid-1">
-                <div class="card-body" style="overflow-y:auto" >
-    
-                    <table class="table table-striped dataTable-table" id="tabla" |>
-                        <!-- ID de "tabla" para realizar busqueda-->
-                        <thead>
-                            <tr>
-                                <th><a href="#" class="dt">Nombre</a>
-                                </th>
-                                <th ><a href="#" class="dt">Precio</a>
-                                </th>
-                                <th><a href="#" class="dt">ingresar
-                                        Cantidad</a></th>
-                            </tr>
-                        </thead>
-        
-        
-                        {%for lista in listatabla%}
-                        <tr>
-                            <td style="display: none;">{{lista.codigo_productos}}</td>
-                            <td>{{lista.nombre_productos}}</td>
-                            <td>{{lista.precioventa_productos}}</td>
-                            <td><input id="number" type="number" value="{{lista.cantidad_productos}}" max="{{lista.cantidad_productos}}" style="width: 3em;" onclick="if(this.value=='{{lista.cantidad_productos}}') this.value=''" onblur="if(this.value=='') this.value='{{lista.cantidad_productos}}'" ></td>
-                            <th ><a href="{%url 'editproducto' lista.codigo_productos %}"
-                                    class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                                    data-original-title="Edit user">
-        
-                                    Añadir al carro
-                                </a>
-        
-        
-        
-        
-        
-        
-                        </tr>
-        
-                        {%endfor%}
-                    </table>
-        
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-12 col-md-6 order-md-2 order-first">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header"> </nav>
+                        </div>
+                    </div>
                 </div>
-                <div class="contenedorfactura">
-        
-                    <table class="table table-striped dataTable-table" id="table2" style="width:1%">
-                        <thead>
-        
-                            <tr>
-                                <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">Nombre</a>
-                                </th>
-                                <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">cantidad</a>
-                                </th>
-                                <th data-sortable="dataTable-sorter" style="width: 10%;"><a href="#" class="dt">subtotal</a>
-                                </th>
-                            </tr>
-        
-                        </thead>
-                        <tbody>
-                            <tr>
-        
-                            </tr>
-                        </tbody>
-                        <tr>
-                            
-                                
-                            
-                        </tr>
-                        <th>
-                            <br>
-                            <a href="#" class="subtotal" style="margin-top: 1em;">Total a pagar : </a>
-                        </th>
-                    </table>
-                    
-                    
-        
-                    
-        
-                </div>
-                <div></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; margin-top: 2em; margin-left:15em;">
-                    <div><button class="Cancelar">
-                        Cancelar
-                    </button></div>
-                    <div><button class="Vender">
-                        Vender
-                    </button></div>
-                </div>
-                
             </div>
+            <div class="row">
+                <div class="col-12 col-lg-6 col-xl-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="item">
+                                <section class="store">
+                                    <table class="table table-flush dataTable align-items-center" id="item">
+                                        <thead>
+                                            <tr>
+                                                <th data-sortable="dataTable-sorter" style="width: 10%;">Nombre</th>
+                                                <th data-sortable="dataTable-sorter" style="width: 10%;">Precio</th>
+                                                <th data-sortable="dataTable-sorter" style="width: 10%;"></th>
+                                            </tr>
+                                        </thead>
+                
+                                        <tbody>
+                                            {%for lista in parameters.listatabla%}
+                                            <tr class="item">
+                                                <td class="item-title">{{lista.nombre_productos}}</td>
+                                                <td class="item-price">{{lista.precioventa_productos}}</td>
+                                                <td>
+                                                    <a type="button" class="text-secondary font-weight-bold text-xs addToCart"><i
+                                                            class="fas fa-cart-plus"></i></a>
+                                                </td>
+                                            </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                            </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl-6">
+                    <div class="card">
+                            <section class="shopping-cart">
+                                <div class="container">
+                                    <h1 class="text-center">Vender</h1>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="shopping-cart-header">
+                                                <h6>Producto</h6>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="shopping-cart-header">
+                                                <h6 class="text-truncate">Precio</h6>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="shopping-cart-header">
+                                                <h6>Cantidad</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ? START SHOPPING CART ITEMS -->
+                                    <div class="shopping-cart-items shoppingCartItemsContainer">
+                                    </div>
+                                    <!-- ? END SHOPPING CART ITEMS -->
+                        
+                                    <!-- START TOTAL -->
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="shopping-cart-total d-flex align-items-center">
+                                                <p class="mb-0">Total</p>
+                                                <p class="ml-4 mb-0 shoppingCartTotal">₲</p>
+                                                <div class="toast ml-auto bg-info" role="alert" aria-live="assertive" aria-atomic="true"
+                                                    data-delay="2000">
+                                                    <div class="toast-header">
+                                                        <span>✅</span>
+                                                        <strong class="mr-auto ml-1 text-secondary">Elemento en el carrito</strong>
+                                                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="toast-body text-white">
+                                                        Se aumentó correctamente la cantidad
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-success ml-auto comprarButton" type="button" data-toggle="modal"
+                                                    data-target="#comprarModal">Vender</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+                                    <!-- END TOTAL -->
+                        
+                                    <!-- START MODAL COMPRA -->
+                                    <div class="modal fade" id="comprarModal" tabindex="-1" aria-labelledby="comprarModalLabel"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="comprarModalLabel">Gracias por su compra</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>La compra se realizo con exito</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- END MODAL COMPRA -->
+                        
+                        
+                                </div>
+                        
+                            </section>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    
-</form>
 
 
 
@@ -199,6 +244,7 @@
         }
     }
 </script>
+<script src="{% static 'assets/js/tienda.js'%}"></script>
 <script src="{% static 'assets/js/search.js' %}"></script> <!-- Script para busqueda-->
 
 {%endblock%}

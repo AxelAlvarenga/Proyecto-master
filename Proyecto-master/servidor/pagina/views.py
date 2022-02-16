@@ -51,11 +51,14 @@ def salir(request):
     return redirect("./")
 
 def cargar_compra(request):
-    listaproveedor=proveedor.objects.all()
-    listacategoria = categoria.objects.all()
-    listatabla=producto.objects.all()
-    return render(request, "cargar_compra.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla, "listacategoria":listacategoria, "listaproveedor":listaproveedor})
 
+    if request.session.get("cod_usuario"):
+        listaproveedor=proveedor.objects.all()
+        listacategoria = categoria.objects.all()
+        listatabla=producto.objects.all()
+        return render(request, "cargar_compra.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla, "listacategoria":listacategoria, "listaproveedor":listaproveedor})
+    else:
+            return redirect('login')
 
 
 
@@ -305,10 +308,40 @@ def vender(request):
     if request.session.get("cod_usuario"):
         listacliente=cliente.objects.all()
         listatabla=producto.objects.all()
-        return render(request, "punto_venta.html",
+        listametodo=metodo_pago.objects.all
+        return validar(request, "punto_venta.html",
      
-         {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente })
+         {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
+    else:
+        return redirect('login')
+def Vender(request, venta_actual=0):
+    if request.session.get("cod_usuario"):
+        listacliente=cliente.objects.all()
+        listatabla=producto.objects.all()
+        listametodo=metodo_pago.objects.all()
+        if request.method=="GET":
+            venta_actual=venta.objects.filter(codigo_venta=venta_actual).exists()
+            if venta_actual:
+                datos_venta=venta.objects.filter(codigo_venta=venta_actual).first()
+                return render(request, "punto_venta.html",
      
+                {"datos_venta":datos_venta,"venta_actual":venta_actual,"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
+            else:
+                return render(request, "punto_venta.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
+    else:
+            return redirect('login')
+    if request.method=="POST":
+        if venta_actual==0:
+            venta_nuevo=categoria(codigo_venta=request.POST.get('codigo_venta'),
+            fecha_venta=request.POST.get('fecha_venta'),
+            total=request.POST.get('total'),
+            nombre_cliente_venta_id=request.POST.get("cliente"),
+            metodo_pago_id=request.POST.get("metodo_pago"))
+            venta_nuevo.save()
+
+        return redirect("../punto_venta/0")
+    else:
+            return redirect('login')
 def borrarproducto(request,producto_actual ):
 
     producto.objects.filter(codigo_productos= producto_actual).delete()

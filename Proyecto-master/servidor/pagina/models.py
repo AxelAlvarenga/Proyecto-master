@@ -18,7 +18,7 @@ class cliente(models.Model):
     direccion_cliente=models.CharField(max_length=50)
 
 class cliente_audi(models.Model):
-    codigo_cliente=models.IntegerField(primary_key=True)
+    codigo_cliente=models.IntegerField()
     nombre_cliente= models.CharField(max_length = 50)
     telefono_cliente= models.IntegerField()
     direccion_cliente=models.CharField(max_length=50)
@@ -27,7 +27,18 @@ class cliente_audi(models.Model):
 
 class categoria(models.Model):
     codigo_categoria=models.AutoField(primary_key=True)
-    nombre_categoria=models.CharField(max_length = 50)   
+    nombre_categoria=models.CharField(max_length = 50) 
+
+class metodo_pago(models.Model):
+    codigo_metodo_pago=models.AutoField(primary_key=True)
+    nombre_metodo_pago=models.CharField(max_length = 50) 
+
+class venta(models.Model):
+    codigo_venta=models.AutoField(primary_key=True)
+    nombre_cliente_venta = models.ForeignKey(cliente, on_delete=models.CASCADE)
+    fecha_venta =models.DateField()
+    metodo_pago = models.ForeignKey(metodo_pago, on_delete=models.CASCADE)
+    total =models.IntegerField()
 
 class proveedor(models.Model):
     codigo_proveedor=models.AutoField(primary_key=True)
@@ -37,7 +48,7 @@ class proveedor(models.Model):
     direccion_proveedor=models.CharField(max_length= 50)
 
 class proveedor_audi(models.Model):
-    codigo_proveedor=models.AutoField(primary_key=True)
+    codigo_proveedor=models.IntegerField()
     nombre_proveedor= models.CharField(max_length = 50)
     ruc_proveedor= models.CharField(max_length = 50)
     Telefono_proveedor= models.IntegerField()
@@ -55,7 +66,7 @@ class producto(models.Model):
     nombre_proveedor = models.ForeignKey(proveedor ,on_delete=models.CASCADE,null=True)
 
 class producto_audi(models.Model):
-    codigo_productos=models.IntegerField(primary_key=True)
+    codigo_productos=models.IntegerField()
     nombre_productos= models.CharField(max_length = 50)
     preciocompra_productos= models.IntegerField()
     precioventa_productos= models.IntegerField()
