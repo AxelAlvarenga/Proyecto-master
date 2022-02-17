@@ -50,15 +50,22 @@
     }
 </style>
 
-<form>
+<form action="{% url 'punto_venta' %}" onsubmit="notifySuccess(this); return false" method="POST">
+    {% csrf_token %}   
+    <input type="date" id="fechaActual" name="fecha_venta" value="{{datos_act.fecha_venta}}" style="visibility: hidden;">
     <div class="container">
         <div class="clientept">
             <div>
                 <label for="ingresar-nombre">Cedula de cliente </label>
-                <input type="text" class="clienteptex"  onfocusout="traerCliente(this)">
+                <input type="text" class="clienteptex"  onfocusout="traerCliente(this)" name="nombre_cliente_venta_id" value="{{datos_act.nombre_cliente_venta_id}}" >
               
     
             </div>
+        </div>
+        <div class="clientept">
+            <label for="ingresar-nombre" id="nombre_cliente">Nombre del Cliente: </label>
+    
+        </div>
             <label for="ingresar-nombre">Metodo de pago </label>
 
             <select class="dataTable-selector form-select" name="metodo_pago_id">
@@ -70,11 +77,7 @@
             </select>
     
     
-        </div>
-        <div class="clientept">
-            <label for="ingresar-nombre" id="nombre_cliente">Nombre del Cliente: </label>
-    
-        </div>
+       
         <div class="busqueda">
             <div>
                 <label for="ingresar-nombre">Buscar producto </label>
@@ -98,28 +101,30 @@
                         <div class="card-body">
                             <div class="item">
                                 <section class="store">
-                                    <table class="table table-flush dataTable align-items-center" id="item">
-                                        <thead>
-                                            <tr>
-                                                <th data-sortable="dataTable-sorter" style="width: 10%;">Nombre</th>
-                                                <th data-sortable="dataTable-sorter" style="width: 10%;">Precio</th>
-                                                <th data-sortable="dataTable-sorter" style="width: 10%;"></th>
-                                            </tr>
-                                        </thead>
-                
-                                        <tbody>
-                                            {%for lista in parameters.listatabla%}
-                                            <tr class="item">
-                                                <td class="item-title">{{lista.nombre_productos}}</td>
-                                                <td class="item-price">{{lista.precioventa_productos}}</td>
-                                                <td>
-                                                    <a type="button" class="text-secondary font-weight-bold text-xs addToCart"><i
-                                                            class="fas fa-cart-plus"></i></a>
-                                                </td>
-                                            </tr>
-                                            {%endfor%}
-                                        </tbody>
-                                    </table>
+                                        
+                                        <table class="table table-striped dataTable-table" id="tabla">
+                                            <thead>
+                                                <tr>
+                                                    <th data-sortable="dataTable-sorter" style="width: 10%;">Nombre</th>
+                                                    <th data-sortable="dataTable-sorter" style="width: 10%;">Precio</th>
+                                                    <th data-sortable="dataTable-sorter" style="width: 10%;"></th>
+                                                </tr>
+                                            </thead>
+                    
+                                            <tbody>
+                                                {%for lista in listatabla%}
+                                                <tr class="item">
+                                                    <td class="item-title">{{lista.nombre_productos}}</td>
+                                                    <td class="item-price">{{lista.precioventa_productos}}</td>
+                                                    <td>
+                                                        <a type="button" class="text-secondary font-weight-bold text-xs addToCart"><i
+                                                                class="fas fa-cart-plus"></i></a>
+                                                    </td>
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                  
                             </div>
                             </section>
                         </div>
@@ -158,7 +163,7 @@
                                         <div class="col-12">
                                             <div class="shopping-cart-total d-flex align-items-center">
                                                 <p class="mb-0">Total</p>
-                                                <p class="ml-4 mb-0 shoppingCartTotal">₲</p>
+                                                <p class="ml-4 mb-0 shoppingCartTotal" value="total_venta" id="total_venta">Gs.</p>
                                                 <div class="toast ml-auto bg-info" role="alert" aria-live="assertive" aria-atomic="true"
                                                     data-delay="2000">
                                                     <div class="toast-header">
@@ -172,6 +177,7 @@
                                                         Se aumentó correctamente la cantidad
                                                     </div>
                                                 </div>
+
                                                 <button class="btn btn-success ml-auto comprarButton" type="button" data-toggle="modal"
                                                     data-target="#comprarModal">Vender</button>
                                             </div>
@@ -215,7 +221,7 @@
 
 
 
-
+</form>
 </body>
 
 </html>
@@ -246,5 +252,18 @@
 </script>
 <script src="{% static 'assets/js/tienda.js'%}"></script>
 <script src="{% static 'assets/js/search.js' %}"></script> <!-- Script para busqueda-->
+<script>
+    window.onload = function () {
+        var fecha = new Date(); //Fecha actual
+        var mes = fecha.getMonth() + 1; //obteniendo mes
+        var dia = fecha.getDate(); //obteniendo dia
+        var ano = fecha.getFullYear(); //obteniendo año
+        if (dia < 10)
+            dia = '0' + dia; //agrega cero si el menor de 10
+        if (mes < 10)
+            mes = '0' + mes //agrega cero si el menor de 10
+        document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
+    } 
+</script>
 
 {%endblock%}

@@ -8,7 +8,6 @@ path('verproducto/<int:producto_actual>', views.verproducto, name='verproducto')
 path('editproducto/<int:producto_actual>',views.editproducto, name='editproducto'),
 path('editclientes/<int:cliente_actual>', views.editclientes ,name='editclientes'),
 path('reportes_cliente/<int:cliente_actual>', views.reportescliente ,name='reportes_cliente'),
-path('vender', views.Vender ,name='vender'),
 path('borrarproducto/<int:producto_actual>', views.borrarproducto , name='borrarproducto'),
 path('borrarcliente/<int:cliente_actual>', views.borrarcliente , name='borrarcliente'),
 path('borrarproveedor/<int:proveedor_actual>', views.borrarproveedor , name='borrarproveedor'),
@@ -21,6 +20,7 @@ path('movimiento_caja', views.cerrar_caja ,name='movimiento_caja'),
 path('abrir_caja/<int:caja_actual>', views.abrir_caja ,name='abrir_caja'),
 path('cerrar_caja/<int:caja_actual>', views.cerrar_caja ,name='cerrar_caja'),
 path('cargar_categoria/<int:categoria_actual>', views.editcategoria ,name='cargar_categoria'),
-path('retirar_caja/<int:caja_actual>', views.retirar_caja ,name='retirar_caja')
+path('retirar_caja/<int:caja_actual>', views.retirar_caja ,name='retirar_caja'),
+path('punto_venta/<int:venta_actual>', views.punto_venta ,name='punto_venta')
 
 ]

@@ -38,7 +38,7 @@ class venta(models.Model):
     nombre_cliente_venta = models.ForeignKey(cliente, on_delete=models.CASCADE)
     fecha_venta =models.DateField()
     metodo_pago = models.ForeignKey(metodo_pago, on_delete=models.CASCADE)
-    total =models.IntegerField()
+    total_venta =models.IntegerField()
 
 class proveedor(models.Model):
     codigo_proveedor=models.AutoField(primary_key=True)

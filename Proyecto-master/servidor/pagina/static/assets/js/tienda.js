@@ -95,7 +95,8 @@ function updateShoppingCartTotal() {
     );
     total = total + shoppingCartItemPrice * shoppingCartItemQuantity;
   });
-  shoppingCartTotal.innerHTML = `${total.toFixed(0)}Gs`;
+  shoppingCartTotal.innerHTML = `${total.toFixed(0)} Gs.`;
+  
 }
 
 function removeShoppingCartItem(event) {

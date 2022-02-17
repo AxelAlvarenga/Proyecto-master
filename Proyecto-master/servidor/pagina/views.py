@@ -116,8 +116,8 @@ def editproducto(request, producto_actual=0):
                 producto_actual.save()
 
             return redirect("../buscar")
-        else:
-            return redirect('login')
+    else:
+         return redirect('login')
 
 def editclientes(request, cliente_actual=0):
     listaclientes=cliente.objects.all()
@@ -304,42 +304,29 @@ def editcategoria(request, categoria_actual=0):
         return redirect("../cargar_categoria/0")
     else:
             return redirect('login')
-def vender(request):
-    if request.session.get("cod_usuario"):
-        listacliente=cliente.objects.all()
-        listatabla=producto.objects.all()
-        listametodo=metodo_pago.objects.all
-        return validar(request, "punto_venta.html",
-     
-         {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
-    else:
-        return redirect('login')
-def Vender(request, venta_actual=0):
-    if request.session.get("cod_usuario"):
-        listacliente=cliente.objects.all()
-        listatabla=producto.objects.all()
-        listametodo=metodo_pago.objects.all()
-        if request.method=="GET":
-            venta_actual=venta.objects.filter(codigo_venta=venta_actual).exists()
-            if venta_actual:
-                datos_venta=venta.objects.filter(codigo_venta=venta_actual).first()
-                return render(request, "punto_venta.html",
-     
-                {"datos_venta":datos_venta,"venta_actual":venta_actual,"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
-            else:
-                return render(request, "punto_venta.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
-    else:
-            return redirect('login')
-    if request.method=="POST":
-        if venta_actual==0:
-            venta_nuevo=categoria(codigo_venta=request.POST.get('codigo_venta'),
-            fecha_venta=request.POST.get('fecha_venta'),
-            total=request.POST.get('total'),
-            nombre_cliente_venta_id=request.POST.get("cliente"),
-            metodo_pago_id=request.POST.get("metodo_pago"))
-            venta_nuevo.save()
 
-        return redirect("../punto_venta/0")
+def punto_venta(request, venta_actual=0):
+    if request.session.get("cod_usuario"):
+            listacliente=cliente.objects.all()
+            listatabla=producto.objects.all()
+            listametodo=metodo_pago.objects.all()
+            if request.method=="GET":
+                venta_actual=venta.objects.filter(codigo_venta=venta_actual).exists()
+                if venta_actual:
+                    datos_venta=venta.objects.filter(codigo_venta=venta_actual).first()
+                    return render(request, "punto_venta.html", {"datos_venta":datos_venta,"venta_actual":venta_actual,"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
+                else:
+                    return render(request, "punto_venta.html", {"nombre_completo":request.session.get("nombredelusuario"),"venta_actual":venta_actual,"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
+            if request.method=="POST":
+                if venta_actual==0:
+                    venta_nuevo=venta(codigo_venta=request.POST.get('codigo_venta'),
+                    fecha_venta=request.POST.get('fecha_venta'),
+                    total_venta=request.POST.get('total_venta'),
+                    nombre_cliente_venta_id=request.POST.get("cliente"),
+                    metodo_pago_id=request.POST.get("metodo_pago"))
+                    venta_nuevo.save()
+
+            return redirect("../punto_venta")
     else:
             return redirect('login')
 def borrarproducto(request,producto_actual ):
@@ -370,8 +357,7 @@ def retirar_caja(request, caja_actual=0):
             caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
             if caj_actual:
                 datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
-                return render(request, 'retirar_caja.html',
-                {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listacaja":listacaja,"listausuario":listausuario})
+                return render(request, 'retirar_caja.html', {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listacaja":listacaja,"listausuario":listausuario})
             else:
                 return render(request, "retirar_caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listacaja":listacaja,"listausuario":listausuario})
 
