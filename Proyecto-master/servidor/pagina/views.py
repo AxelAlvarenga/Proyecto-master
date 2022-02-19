@@ -310,22 +310,33 @@ def punto_venta(request, venta_actual=0):
             listacliente=cliente.objects.all()
             listatabla=producto.objects.all()
             listametodo=metodo_pago.objects.all()
+            listadetalle=detalle_venta.objects.all()
             if request.method=="GET":
                 venta_actual=venta.objects.filter(codigo_venta=venta_actual).exists()
                 if venta_actual:
                     datos_venta=venta.objects.filter(codigo_venta=venta_actual).first()
-                    return render(request, "punto_venta.html", {"datos_venta":datos_venta,"venta_actual":venta_actual,"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
+                    return render(request, "punto_venta.html", {"datos_act":datos_venta,"venta_actual":venta_actual,"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo,"listadetalle":listadetalle })
                 else:
-                    return render(request, "punto_venta.html", {"nombre_completo":request.session.get("nombredelusuario"),"venta_actual":venta_actual,"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo })
+                    return render(request, "punto_venta.html", {"nombre_completo":request.session.get("nombredelusuario"),"venta_actual":venta_actual,"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo,"listadetalle":listadetalle })
             if request.method=="POST":
                 if venta_actual==0:
                     venta_nuevo=venta(codigo_venta=request.POST.get('codigo_venta'),
                     fecha_venta=request.POST.get('fecha_venta'),
                     total_venta=request.POST.get('total_venta'),
-                    nombre_cliente_venta_id=request.POST.get("cliente"),
-                    metodo_pago_id=request.POST.get("metodo_pago"))
+                    subtotal_venta=request.POST.get('subtotal_venta'),
+                    iva=request.POST.get('iva'),
+                    codigo_cliente_venta=request.POST.get("codigo_cliente_venta"),
+                    metodo_de_pago_id=request.POST.get("metodo_pago"))
+
                     venta_nuevo.save()
 
+                    venta_actual=detalle_venta(venta_detalle=request.POST.get('venta_detalle'),
+                    producto_detalle=request.POST.get("producto_detalle"),
+                    precio_detalle=request.POST.get("precio_detalle"),
+                    cantidad_detalle=request.POST.get("cantidad_detalle"),
+                    subtotal=request.POST.get("subtotal"))
+                    venta_actual.save()
+                    
             return redirect("../punto_venta")
     else:
             return redirect('login')

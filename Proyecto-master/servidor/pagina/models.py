@@ -33,12 +33,7 @@ class metodo_pago(models.Model):
     codigo_metodo_pago=models.AutoField(primary_key=True)
     nombre_metodo_pago=models.CharField(max_length = 50) 
 
-class venta(models.Model):
-    codigo_venta=models.AutoField(primary_key=True)
-    nombre_cliente_venta = models.ForeignKey(cliente, on_delete=models.CASCADE)
-    fecha_venta =models.DateField()
-    metodo_pago = models.ForeignKey(metodo_pago, on_delete=models.CASCADE)
-    total_venta =models.IntegerField()
+
 
 class proveedor(models.Model):
     codigo_proveedor=models.AutoField(primary_key=True)
@@ -86,3 +81,19 @@ class caja(models.Model):
     tipo_mov=models.IntegerField(null=True)
     nombre_usuario = models.ForeignKey(Usuarios ,on_delete=models.CASCADE,null=True)
     total_caja=models.CharField(max_length = 50, null=True)
+
+class venta(models.Model):
+    codigo_venta=models.AutoField(primary_key=True)
+    codigo_cliente_venta = models.IntegerField()
+    fecha_venta =models.DateField()
+    metodo_de_pago = models.ForeignKey(metodo_pago, on_delete=models.CASCADE)
+    total_venta =models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    subtotal_venta=models.DecimalField(default=0.00, max_digits=9, decimal_places=2,null=True)
+    iva=models.DecimalField(default=0.00, max_digits=9, decimal_places=2, null=True)
+    
+class detalle_venta(models.Model):
+    venta_detalle=models.AutoField(primary_key=True)
+    producto_detalle=models.ForeignKey(producto, on_delete=models.CASCADE)
+    precio_detalle=models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad_detalle=models.IntegerField()
+    subtotal=models.DecimalField(default=0.00, max_digits=9, decimal_places=2)

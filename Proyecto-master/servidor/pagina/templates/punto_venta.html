@@ -53,11 +53,13 @@
 <form action="{% url 'punto_venta' %}" onsubmit="notifySuccess(this); return false" method="POST">
     {% csrf_token %}   
     <input type="date" id="fechaActual" name="fecha_venta" value="{{datos_act.fecha_venta}}" style="visibility: hidden;">
+    <input type="text" id="total"  name="total_venta" value="{{datos_act.total_venta}}" >
+    
     <div class="container">
         <div class="clientept">
             <div>
                 <label for="ingresar-nombre">Cedula de cliente </label>
-                <input type="text" class="clienteptex"  onfocusout="traerCliente(this)" name="nombre_cliente_venta_id" value="{{datos_act.nombre_cliente_venta_id}}" >
+                <input type="number" class="clienteptex"  onchange="traerCliente(this);" name="codigo_cliente_venta" value="{{datos_act.codigo_cliente_venta}}" >
               
     
             </div>
@@ -66,16 +68,17 @@
             <label for="ingresar-nombre" id="nombre_cliente">Nombre del Cliente: </label>
     
         </div>
+        <div>
             <label for="ingresar-nombre">Metodo de pago </label>
 
-            <select class="dataTable-selector form-select" name="metodo_pago_id">
+            <select class="dataTable-selector form-select" name="metodo_pago">
                 {% for lista in listametodo%}
-                <option value="{{lista.codigo_metodo_pago}}" {% if lista.codigo_metodo_pago == datos_act.metodo_pago_id%} selected {% endif %}>
+                <option value="{{lista.codigo_metodo_pago}}" {% if lista.codigo_metodo_pago == datos_act.metodo_de_pago_id%} selected {% endif %}>
                     {{lista.nombre_metodo_pago}}
                 </option>
                 {% endfor %}
             </select>
-    
+        </div>
     
        
         <div class="busqueda">
@@ -155,6 +158,7 @@
                                     </div>
                                     <!-- ? START SHOPPING CART ITEMS -->
                                     <div class="shopping-cart-items shoppingCartItemsContainer">
+                                   
                                     </div>
                                     <!-- ? END SHOPPING CART ITEMS -->
                         
@@ -163,7 +167,7 @@
                                         <div class="col-12">
                                             <div class="shopping-cart-total d-flex align-items-center">
                                                 <p class="mb-0">Total</p>
-                                                <p class="ml-4 mb-0 shoppingCartTotal" value="total_venta" id="total_venta">Gs.</p>
+                                                <p class="ml-4 mb-0 shoppingCartTotal" id="total_venta">Gs.</p>
                                                 <div class="toast ml-auto bg-info" role="alert" aria-live="assertive" aria-atomic="true"
                                                     data-delay="2000">
                                                     <div class="toast-header">
@@ -178,8 +182,9 @@
                                                     </div>
                                                 </div>
 
-                                                <button class="btn btn-success ml-auto comprarButton" type="button" data-toggle="modal"
-                                                    data-target="#comprarModal">Vender</button>
+                                                <button class="btn btn-success ml-auto comprarButton" type="submit" data-toggle="modal"
+                                                    data-target="#comprarModal">Vender
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -250,6 +255,7 @@
         }
     }
 </script>
+
 <script src="{% static 'assets/js/tienda.js'%}"></script>
 <script src="{% static 'assets/js/search.js' %}"></script> <!-- Script para busqueda-->
 <script>
@@ -264,6 +270,35 @@
             mes = '0' + mes //agrega cero si el menor de 10
         document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
     } 
+</script>
+<script>
+function updateShoppingCartTotal() {
+  let total = 0;
+  const shoppingCartTotal = document.querySelector('.shoppingCartTotal');
+
+  const shoppingCartItems = document.querySelectorAll('.shoppingCartItem');
+
+  shoppingCartItems.forEach((shoppingCartItem) => {
+    const shoppingCartItemPriceElement = shoppingCartItem.querySelector(
+      '.shoppingCartItemPrice'
+    );
+    const shoppingCartItemPrice = Number(
+      shoppingCartItemPriceElement.textContent.replace('Gs', '')
+    );
+    const shoppingCartItemQuantityElement = shoppingCartItem.querySelector(
+      '.shoppingCartItemQuantity'
+    );
+    const shoppingCartItemQuantity = Number(
+      shoppingCartItemQuantityElement.value
+    );
+    total = total + shoppingCartItemPrice * shoppingCartItemQuantity;
+  });
+  document.getElementById('total').value=total;
+  shoppingCartTotal.innerHTML = `${total.toFixed(0)} Gs.`;
+  console.log(total.toFixed(0));
+   
+}
+    
 </script>
 
 {%endblock%}

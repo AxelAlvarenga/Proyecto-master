@@ -34,7 +34,7 @@ function addItemToShoppingCart(itemTitle, itemPrice) {
       elementQuantity.value++;
       $('.toast').toast('show');
       updateShoppingCartTotal();
-      return;
+      
     }
   }
 
@@ -74,30 +74,7 @@ function addItemToShoppingCart(itemTitle, itemPrice) {
   updateShoppingCartTotal();
 }
 
-function updateShoppingCartTotal() {
-  let total = 0;
-  const shoppingCartTotal = document.querySelector('.shoppingCartTotal');
 
-  const shoppingCartItems = document.querySelectorAll('.shoppingCartItem');
-
-  shoppingCartItems.forEach((shoppingCartItem) => {
-    const shoppingCartItemPriceElement = shoppingCartItem.querySelector(
-      '.shoppingCartItemPrice'
-    );
-    const shoppingCartItemPrice = Number(
-      shoppingCartItemPriceElement.textContent.replace('Gs', '')
-    );
-    const shoppingCartItemQuantityElement = shoppingCartItem.querySelector(
-      '.shoppingCartItemQuantity'
-    );
-    const shoppingCartItemQuantity = Number(
-      shoppingCartItemQuantityElement.value
-    );
-    total = total + shoppingCartItemPrice * shoppingCartItemQuantity;
-  });
-  shoppingCartTotal.innerHTML = `${total.toFixed(0)} Gs.`;
-  
-}
 
 function removeShoppingCartItem(event) {
   const buttonClicked = event.target;
