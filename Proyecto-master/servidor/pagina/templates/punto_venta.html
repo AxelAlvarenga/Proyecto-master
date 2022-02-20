@@ -52,8 +52,6 @@
 
 <form action="{% url 'punto_venta' %}" onsubmit="notifySuccess(this); return false" method="POST">
     {% csrf_token %}   
-    <input type="date" id="fechaActual" name="fecha_venta" value="{{datos_act.fecha_venta}}" style="visibility: hidden;">
-    <input type="text" id="total"  name="total_venta" value="{{datos_act.total_venta}}" >
     
     <div class="container">
         <div class="clientept">
@@ -110,6 +108,7 @@
                                                 <tr>
                                                     <th data-sortable="dataTable-sorter" style="width: 10%;">Nombre</th>
                                                     <th data-sortable="dataTable-sorter" style="width: 10%;">Precio</th>
+                                                    <th data-sortable="dataTable-sorter" style="width: 10%;">codigo</th>
                                                     <th data-sortable="dataTable-sorter" style="width: 10%;"></th>
                                                 </tr>
                                             </thead>
@@ -119,6 +118,7 @@
                                                 <tr class="item">
                                                     <td class="item-title">{{lista.nombre_productos}}</td>
                                                     <td class="item-price">{{lista.precioventa_productos}}</td>
+                                                    <td class="item-cod">{{lista.codigo_productos}}</td>
                                                     <td>
                                                         <a type="button" class="text-secondary font-weight-bold text-xs addToCart"><i
                                                                 class="fas fa-cart-plus"></i></a>
@@ -140,7 +140,7 @@
                                     <h1 class="text-center">Vender</h1>
                                     <hr>
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <div class="shopping-cart-header">
                                                 <h6>Producto</h6>
                                             </div>
@@ -148,6 +148,11 @@
                                         <div class="col-2">
                                             <div class="shopping-cart-header">
                                                 <h6 class="text-truncate">Precio</h6>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="shopping-cart-header">
+                                                <h6 class="text-truncate">codigo</h6>
                                             </div>
                                         </div>
                                         <div class="col-4">
@@ -222,7 +227,16 @@
             </div>
         </div>
     </div>
-
+    <div class="button">
+        <form action="{% url 'punto_venta' %}" method="post">
+            {% csrf_token %}
+            <input type="text" class="form-control" id="resultado" name="resultado" value="resultado">
+            <input type="text" class="form-control" id="codigoprod" name="codigoprod" value="codigoprod">
+            <input type="text" class="form-control" id="nombre" name="nombre" value="nombre">
+            <input type="text" class="form-control" id="cantidad" name="cantidad" value="cantidad">
+            <button class="btn icon icon-left btn-primary round" type="submit">Guardar Venta</button>
+        </form>
+    </div>
 
 
 
@@ -271,34 +285,6 @@
         document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
     } 
 </script>
-<script>
-function updateShoppingCartTotal() {
-  let total = 0;
-  const shoppingCartTotal = document.querySelector('.shoppingCartTotal');
 
-  const shoppingCartItems = document.querySelectorAll('.shoppingCartItem');
-
-  shoppingCartItems.forEach((shoppingCartItem) => {
-    const shoppingCartItemPriceElement = shoppingCartItem.querySelector(
-      '.shoppingCartItemPrice'
-    );
-    const shoppingCartItemPrice = Number(
-      shoppingCartItemPriceElement.textContent.replace('Gs', '')
-    );
-    const shoppingCartItemQuantityElement = shoppingCartItem.querySelector(
-      '.shoppingCartItemQuantity'
-    );
-    const shoppingCartItemQuantity = Number(
-      shoppingCartItemQuantityElement.value
-    );
-    total = total + shoppingCartItemPrice * shoppingCartItemQuantity;
-  });
-  document.getElementById('total').value=total;
-  shoppingCartTotal.innerHTML = `${total.toFixed(0)} Gs.`;
-  console.log(total.toFixed(0));
-   
-}
-    
-</script>
 
 {%endblock%}

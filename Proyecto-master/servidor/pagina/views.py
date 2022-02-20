@@ -1,3 +1,4 @@
+from re import M
 from django.http import request
 from django.shortcuts import render, redirect
 from pagina.models import *
@@ -322,24 +323,22 @@ def punto_venta(request, venta_actual=0):
                 if venta_actual==0:
                     venta_nuevo=venta(codigo_venta=request.POST.get('codigo_venta'),
                     fecha_venta=request.POST.get('fecha_venta'),
-                    total_venta=request.POST.get('total_venta'),
+                    total_venta=request.POST.get('resultado'),
                     subtotal_venta=request.POST.get('subtotal_venta'),
                     iva=request.POST.get('iva'),
                     codigo_cliente_venta=request.POST.get("codigo_cliente_venta"),
-                    metodo_de_pago_id=request.POST.get("metodo_pago"))
-
+                    cantidad_detalle=request.POST.get("cantidad"),
+                    metodo_de_pago_id=request.POST.get("metodo_pago"),
+                    nombre_producto_venta=request.POST.get("nombre"),
+                    codigo_producto=request.POST.get("codigoprod"))
                     venta_nuevo.save()
 
-                    venta_actual=detalle_venta(venta_detalle=request.POST.get('venta_detalle'),
-                    producto_detalle=request.POST.get("producto_detalle"),
-                    precio_detalle=request.POST.get("precio_detalle"),
-                    cantidad_detalle=request.POST.get("cantidad_detalle"),
-                    subtotal=request.POST.get("subtotal"))
-                    venta_actual.save()
+                   
                     
             return redirect("../punto_venta")
     else:
             return redirect('login')
+
 def borrarproducto(request,producto_actual ):
 
     producto.objects.filter(codigo_productos= producto_actual).delete()

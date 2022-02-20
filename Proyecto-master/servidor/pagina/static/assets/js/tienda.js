@@ -16,11 +16,12 @@ function addToCartClicked(event) {
 
   const itemTitle = item.querySelector('.item-title').textContent;
   const itemPrice = item.querySelector('.item-price').textContent;
+  const itemcod = item.querySelector('.item-cod').textContent;
 
-  addItemToShoppingCart(itemTitle, itemPrice);
+  addItemToShoppingCart(itemTitle, itemPrice, itemcod);
 }
 
-function addItemToShoppingCart(itemTitle, itemPrice) {
+function addItemToShoppingCart(itemTitle, itemPrice, itemcod) {
   const elementsTitle = shoppingCartItemsContainer.getElementsByClassName(
     'shoppingCartItemTitle'
   );
@@ -41,7 +42,7 @@ function addItemToShoppingCart(itemTitle, itemPrice) {
   const shoppingCartRow = document.createElement('div');
   const shoppingCartContent = `
   <div class="row shoppingCartItem">
-        <div class="col-6">
+        <div class="col-4">
             <div class="shopping-cart-item d-flex align-items-center h-100 border-bottom pb-2 pt-3">
                 <h6 class="shopping-cart-item-title shoppingCartItemTitle text-truncate ml-3 mb-0">${itemTitle}</h6>
             </div>
@@ -51,17 +52,26 @@ function addItemToShoppingCart(itemTitle, itemPrice) {
                 <p class="item-price mb-0 shoppingCartItemPrice">${itemPrice}</p>
             </div>
         </div>
+        <div class="col-2">
+            <div class="shopping-cart-cod d-flex align-items-center h-100 border-bottom pb-2 pt-3">
+                <p class="item-cod mb-0 shoppingCartItemcod">${itemcod}</p>
+            </div>
+        </div>
         <div class="col-4">
             <div
                 class="shopping-cart-quantity d-flex justify-content-between align-items-center h-100 border-bottom pb-2 pt-3">
                 <input class="shopping-cart-quantity-input shoppingCartItemQuantity  form-control" type="number"
-                    value="1">
+                    value="1" id="cant">
                 <button class="btn btn-danger buttonDelete" type="button">X</button>
             </div>
         </div>
     </div>`;
   shoppingCartRow.innerHTML = shoppingCartContent;
   shoppingCartItemsContainer.append(shoppingCartRow);
+
+  document.getElementById('codigoprod').value=itemcod;
+  document.getElementById('nombre').value=itemTitle;
+
 
   shoppingCartRow
     .querySelector('.buttonDelete')
@@ -73,7 +83,33 @@ function addItemToShoppingCart(itemTitle, itemPrice) {
 
   updateShoppingCartTotal();
 }
+function updateShoppingCartTotal() {
+  let total = 0;
+  const shoppingCartTotal = document.querySelector('.shoppingCartTotal');
 
+  const shoppingCartItems = document.querySelectorAll('.shoppingCartItem');
+
+  shoppingCartItems.forEach((shoppingCartItem) => {
+    const shoppingCartItemPriceElement = shoppingCartItem.querySelector(
+      '.shoppingCartItemPrice'
+    );
+    const shoppingCartItemPrice = Number(
+      shoppingCartItemPriceElement.textContent.replace('Gs', '')
+    );
+    const shoppingCartItemQuantityElement = shoppingCartItem.querySelector(
+      '.shoppingCartItemQuantity'
+    );
+    const shoppingCartItemQuantity = Number(
+      shoppingCartItemQuantityElement.value
+    );
+    total = total + shoppingCartItemPrice * shoppingCartItemQuantity;
+    document.getElementById('cantidad').value=shoppingCartItemQuantity
+  });
+  
+  shoppingCartTotal.innerHTML = `${total.toFixed(0)} Gs.`;
+  console.log(total.toFixed(0));
+  document.getElementById('resultado').value=total.toFixed(2); 
+}
 
 
 function removeShoppingCartItem(event) {

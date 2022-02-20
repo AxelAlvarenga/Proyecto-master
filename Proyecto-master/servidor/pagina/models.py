@@ -90,7 +90,9 @@ class venta(models.Model):
     total_venta =models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     subtotal_venta=models.DecimalField(default=0.00, max_digits=9, decimal_places=2,null=True)
     iva=models.DecimalField(default=0.00, max_digits=9, decimal_places=2, null=True)
-    
+    cantidad_detalle=models.IntegerField()
+    nombre_producto_venta=models.CharField(max_length=50)
+    codigo_producto=models.CharField(max_length=50)
 class detalle_venta(models.Model):
     venta_detalle=models.AutoField(primary_key=True)
     producto_detalle=models.ForeignKey(producto, on_delete=models.CASCADE)
