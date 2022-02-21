@@ -57,6 +57,7 @@
         <div class="clientept">
             <div>
                 <label for="ingresar-nombre">Cedula de cliente </label>
+                <input type="date" id="fechaActual" name="fecha_venta" value="{{datos_act.fecha_venta}}" style="visibility: hidden;">
                 <input type="number" class="clienteptex"  onchange="traerCliente(this);" name="codigo_cliente_venta" value="{{datos_act.codigo_cliente_venta}}" >
               
     
@@ -230,10 +231,13 @@
     <div class="button">
         <form action="{% url 'punto_venta' %}" method="post">
             {% csrf_token %}
+            <div style="visibility: hidden;">           
             <input type="text" class="form-control" id="resultado" name="resultado" value="resultado">
             <input type="text" class="form-control" id="codigoprod" name="codigoprod" value="codigoprod">
             <input type="text" class="form-control" id="nombre" name="nombre" value="nombre">
             <input type="text" class="form-control" id="cantidad" name="cantidad" value="cantidad">
+            </div>
+ 
             <button class="btn icon icon-left btn-primary round" type="submit">Guardar Venta</button>
         </form>
     </div>

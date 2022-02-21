@@ -84,7 +84,7 @@
                             </li>
                         </li>
                         <li class="sidebar-item" id="sidebar-item3">
-                            <a href="{% url 'inicio'%}"class='sidebar-link'>
+                            <a href="{% url 'reportes_cliente'%}"class='sidebar-link'>
                                 <i class="fas fa-paste"></i>
                                 <span>Reportes</span>
                             </a>
@@ -140,11 +140,8 @@
     } else if (window.location.pathname == '/pagina/buscar'|| window.location.pathname == '/pagina/inicio') {
         sidebar2.className += ' active'
     
-    }else if (window.location.pathname == '/pagina/index.html'){
+    }else if (window.location.pathname == '/pagina/reportes_cliente'){
         sidebar3.className += ' active'
-    }
-    else if (window.location.pathname == '/pagina/vender'){
-        sidebar4.className += ' active'
     }
     else if (window.location.pathname == '/pagina/cargar_proveedor/0'){
         sidebar5.className += ' active'
@@ -154,5 +151,8 @@
     }
     else if (window.location.pathname == '/pagina/movimiento_caja'){
         sidebar7.className += ' active'
+    }
+    else if (window.location.pathname == '/pagina/punto_venta'){
+        sidebar4.className += ' active'
     }
 </script>

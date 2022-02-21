@@ -7,7 +7,7 @@ from pagina.models import *
 def login(request):
     if request.method == "GET":
         if request.session.get("cod_usuario"):
-            return redirect("index.html")
+            return redirect("reportes_cliente")
         else: 
             return render(request, 'login.html')
     if request.method == "POST":
@@ -22,7 +22,7 @@ def login(request):
                 request.session["nombredelusuario"]=getattr(datos_usuario, "nombre_usuario")
                 request.session["nombre_completo_usuario"]=getattr(datos_usuario, "nombre_completo_usuario")
                 request.session["tipo_usuario"]=getattr(datos_usuario, "tipo_usuario")
-                return redirect("index.html")
+                return redirect("reportes_cliente")
             else:
                 return render(request, 'login.html', {"mensaje_error":"Contraseña ingresada es incorrecta."})
         else:
@@ -31,7 +31,7 @@ def login(request):
 def validar(request, pageSuccess , parameters={}):
     if request.session.get("cod_usuario"):
         if (request.session.get("tipo_usuario") == 2) and ((pageSuccess == 'cargar_cliente.html')):
-            return render(request, "index.html", {"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario"), "mensaje": "Este usuario no cuenta con los privilegios suficientes"})
+            return render(request, "reportes_cliente", {"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario"), "mensaje": "Este usuario no cuenta con los privilegios suficientes"})
         else: 
             return render(request, pageSuccess, {"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario"), "parameters": parameters})
     else:
@@ -43,8 +43,7 @@ def inicio(request):
         return render(request,"index.html",{"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario")})
     else:
         return redirect('login')
-def verproducto(request):
-    return validar(request,"table-datatable.html")
+
 
 def salir(request):
 
@@ -63,10 +62,7 @@ def cargar_compra(request):
 
 
 
-def buscar(request):
-    listacategoria = categoria.objects.all()
-    listatabla=producto.objects.all()
-    return render(request, "table-datatable.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla, "listacategoria":listacategoria})
+
 
 def editproducto(request, producto_actual=0):
     listacategoria = categoria.objects.all()
@@ -116,7 +112,7 @@ def editproducto(request, producto_actual=0):
                 producto_actual.nombre_proveedor_id=request.POST.get("proveedor")
                 producto_actual.save()
 
-            return redirect("../buscar")
+            return redirect("../cargar_compra")
     else:
          return redirect('login')
 
@@ -162,37 +158,12 @@ def editclientes(request, cliente_actual=0):
     else:
         return redirect('login')
 
-def reportescliente(request, cliente_actual=0):
+def reportescliente(request):
     if request.session.get("cod_usuario"):
-        listaclientes=cliente.objects.all()
-        if request.method=="GET":
-            clie_actual=cliente.objects.filter(codigo_cliente=cliente_actual).exists()
-            if clie_actual:
-                datos_cliente=cliente.objects.filter(codigo_cliente=cliente_actual).first()
-                return render(request, 'cargar_cliente.html',
-                {"datos_act":datos_cliente, "cliente_actual":cliente_actual, "titulo":"Editar Usuario" , "listaclientes":listaclientes})
-            else:
-                return render(request, "cargar_cliente.html", {"nombre_completo":request.session.get("nombredelusuario"), "cliente_actual":cliente_actual, "titulo":"Cargar Usuario" , "listaclientes":listaclientes})
-
-        if request.method=="POST":
-            if cliente_actual==0:
-                cliente_nuevo=cliente(codigo_cliente=request.POST.get('codigo_cliente'),
-                nombre_cliente=request.POST.get('nombre_cliente'),
-                telefono_cliente=request.POST.get('telefonos_cliente'),
-                direccion_cliente=request.POST.get("direccion_cliente"))
-
-                cliente_nuevo.save()
-            else:
-                cliente_actual=cliente.objects.get(codigo_cliente=cliente_actual)
-                cliente_actual.nombre_cliente=request.POST.get("nombre_cliente")
-                cliente_actual.codigo_cliente=request.POST.get("codigo_cliente")
-                cliente_actual.direccion_cliente=request.POST.get("direccion_cliente")
-                cliente_actual.telefono_cliente=request.POST.get("telefonos_cliente")
-
-                cliente_actual.save()
-
-            
-        return redirect("../reportes_cliente")
+        listatabla=venta.objects.all()
+        listacliente=cliente.objects.all()
+        listametodo=metodo_pago.objects.all()
+        return render(request, "reportes_cliente.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo})
     else:
          return redirect('login')    
 
@@ -389,7 +360,7 @@ def retirar_caja(request, caja_actual=0):
         else:
             return redirect('login')
 
-
+def pagar()
 
 
 def abrir_caja(request, caja_actual=0):
@@ -433,15 +404,16 @@ def borrarcategoria(request, categoria_actual ):
 def cerrar_caja(request, caja_actual=0):
     if request.session.get("cod_usuario"):
         listatabla=caja.objects.all()
+        listaventa=venta.objects.all()
         listausuario=Usuarios.objects.all()
         if request.method=="GET":
             caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
             if caj_actual:
                 datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
                 return render(request, 'caja.html',
-                {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listatabla":listatabla,"listausuario":listausuario})
+                {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listatabla":listatabla,"listausuario":listausuario,"listaventa":listaventa})
             else:
-                return render(request, "caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listatabla":listatabla,"listausuario":listausuario})
+                return render(request, "caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listatabla":listatabla,"listausuario":listausuario, "listaventa":listaventa})
 
         if request.method=="POST":
             datos_usuario=Usuarios.objects.filter(nombre_usuario=request.POST.get('nombredelusuario')).first()
