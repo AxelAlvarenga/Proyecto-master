@@ -1,3 +1,4 @@
+from msilib.schema import ListView
 from re import M
 from django.http import request
 from django.shortcuts import render, redirect
@@ -49,6 +50,22 @@ def salir(request):
 
     request.session.flush()
     return redirect("./")
+
+class listaproductos(ListView):
+    def get_queryset(self):
+        return self.model.objects.filter(cod_usuario=True)
+    def get(self , request, *args, **kwargs):
+        lista_productos=[]
+        for producto in self.get_queryset():
+            data_producto={}
+            data_producto["id"]=producto.codigo_producto
+            data_producto["nombre"]=producto.nombre_productos
+            data_producto["precio"]=producto.precioventa_productos
+            data_producto["categoria"]=producto.categoria_productos
+            data_producto["cantidad"]=producto.cantidad_productos
+            lista_productos.append(data_producto)
+        print(lista_productos)
+        return render(request, self)
 
 def cargar_compra(request):
 
@@ -360,7 +377,6 @@ def retirar_caja(request, caja_actual=0):
         else:
             return redirect('login')
 
-def pagar()
 
 
 def abrir_caja(request, caja_actual=0):

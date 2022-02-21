@@ -93,8 +93,11 @@ class venta(models.Model):
     cantidad_detalle=models.IntegerField()
     nombre_producto_venta=models.CharField(max_length=50)
     codigo_producto=models.CharField(max_length=50)
+    productos=models.ManyToManyField(producto, through="detalle_venta")
+
 class detalle_venta(models.Model):
     venta_detalle=models.AutoField(primary_key=True)
+    venta=models.ForeignKey(venta, on_delete=models.CASCADE)
     producto_detalle=models.ForeignKey(producto, on_delete=models.CASCADE)
     precio_detalle=models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad_detalle=models.IntegerField()

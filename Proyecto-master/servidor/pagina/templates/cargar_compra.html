@@ -119,5 +119,7 @@
     }
 </script>
 <script src="{% static 'assets/js/search.js' %}"></script> <!-- Script para busqueda-->
-
+{% block extrajs%}
+<script src="{% static 'assets/js/usuario/index.js' %}"></script>
+{%endblock extrajs%}
 {%endblock%}
