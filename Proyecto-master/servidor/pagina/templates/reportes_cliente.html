@@ -2,56 +2,165 @@
 {% load static %}
 {%block cabecera%}
 
-<div class="dataTable-container" style="overflow-y:auto;">
-    <table class="table table-striped dataTable-table" id="tabla">
-        <thead>
-            <tr>
-                <th data-sortable="" style="width: 23.2012%;"><a href="#"
-                        class="dataTable-sorter">Nombre Cliente</a></th>
-                <th data-sortable="" style="width: 23.2012%;"><a href="#"
-                        class="dataTable-sorter">fecha de la venta</a></th>
-                <th data-sortable="" style="width: 26.7434%;"><a href="#"
-                        class="dataTable-sorter">total a pagar</a></th>
-                <th data-sortable="" style="width: 26.7434%;"><a href="#"
-                            class="dataTable-sorter">tipo de pago</a></th>
+<body>
+    <div class="main-content container-fluid">
 
-            </tr>
-        </thead>
-
-        {%for lista in parameters.listatabla%}
+        <!-- Basic Tables start -->
+        <div class="main-content container-fluid">
             
-                <tr>
-                {%for cliente in parameters.listacliente%}
-                    {% if cliente.codigo_cliente == lista.codigo_cliente_venta_id %}
-                    <td>{{cliente.nombre_cliente}}</td>
-                    {%endif%}
-                {%endfor%}
-                    <td>{{lista.fecha_venta}}</td>
-                    <td>{{lista.total}}</td>
-                {%if lista.metodo_de_pago_id == 1%}
-                    <th data-sortable=""><a href=""
-                            class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                            data-original-title="Edit user">
-
-                            pagar
-                        </a>
-                {%else%}
-                {%for metodo in parameters.listametodo%}
-                    {%if lista.metodo_de_pago_id == metodo.codigo_metodo_pago%}
-                            <td>{{metodo.nombre_metodo_pago}}</td>
-                    {%endif%}
-                {%endfor%}
-                {%endif%}
-
-
-
-
-                </tr>
+            <section class="section">
+                <div class="row">
+                    <div class="main-content container-fluid">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                                    <div class="dataTable-container">
+                                        <table class="table table-flush dataTable align-items-center" id="datosventa">
+                                            <h3 class="text-center">Reporte de Ventas</h3>
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre Cliente</th>
+                                                    <th>fecha de la venta</th>
+                                                    <th>total a pagar</th>
+                                                    <th>Opciones</th>
             
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {%for lista in parameters.listatabla%}
             
-        
-        {%endfor%}
-    </table>
-</div>
+                                                <tr>
+                                                    {%for cliente in parameters.listacliente%}
+                                                    {% if cliente.codigo_cliente == lista.codigo_cliente_venta_id %}
+                                                    <td>{{cliente.nombre_cliente}}</td>
+                                                    {%endif%}
+                                                    {%endfor%}
+                                                    <td>{{lista.fecha_venta}}</td>
+                                                    <td>{{lista.total}}</td>
+                                                    <td>
+                                                        <form class="" action="{% url 'reportes_cliente' %}" method="POST">
+                                                            {% csrf_token %}
+                                                            <input type="number" name="metodo" value="2" style="display: none;">
+                                                            {%if lista.metodo_de_pago_id == 2%}
+                                                            
+                                                                <a href="{% url 'reportes_cliente'%}" class="text-secondary font-weight-bold text-xs"
+                                                                    data-toggle="tooltip" data-original-title="Edit user" onclick="checker()">
+                                                                    pagar libreta
+                                                                </a>
+                                                                {%else%} pagado
+                                                            
+                                                            {%endif%}
+                                                        </form>
+                                                    </td>
+                                                    
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-content container-fluid">
+                        <div class="card">
+                            <div class="card-header">                               
+                            </div>
+                            <div class="card-body">
+                                <div
+                                    class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                                    <div class="dataTable-container">
+                                        <table class="table table-flush dataTable align-items-center" id="datos1">
+                                            <thead>
+                                                <h3 class="text-center">Auditoria de Clientes</h3>
+                                                <tr>
+                                                    <th class="dataTable-sorter">Nombre Cliente</th>
+                                                    <th class="dataTable-sorter">telefono</th>
+                                                    <th class="dataTable-sorter">direccion</th>
+                                                    <th class="dataTable-sorter">Responsable</th>                                                
+                                                </tr>
+                                            </thead>
+                                            {%for lista in parameters.listaaudicl%}
+                                            <tr>
+                                                <td>{{lista.nombre_cliente}}</td>
+                                                <td>{{lista.telefono_cliente}}</td>
+                                                <td>{{lista.direccion_cliente}}</td>
+                                                <td>{{lista.nombre_usuario}}</td>
+                                            </tr>
+                                            {%endfor%}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </section>
 
-{%endblock%}
+</body>
+    <script>
+        function checker() {
+            var result = confirm('Estas seguro que quieres pagar esta deuda?');
+            if (result == false) {
+                event.preventDefault();
+            }
+        }
+    </script>
+
+    {% block extrajs %}
+    <script>
+        $(document).ready(function () {
+            $('#datos1').DataTable({
+                "language": {
+                    "emptyTable": "No existen registros a exponer.",
+                    "info": "",
+                    "infoEmpty": "",
+                    "infoFiltered": "",
+                    "infoPostFix": "",
+                    "thousands": ".",
+                    "lengthMenu": "Registros a mostrar _MENU_",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "No se obtuvo ninguna coincidencia",
+                    oPaginate: {
+                        sNext: '<i class="fa fa-forward"></i>',
+                        sPrevious: '<i class="fa fa-backward"></i>',
+                        sFirst: '<i class="fa fa-step-backward"></i>',
+                        sLast: '<i class="fa fa-step-forward"></i>'
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#datosventa').DataTable({
+                "language": {
+                    "emptyTable": "No existen registros a exponer.",
+                    "info": "",
+                    "infoEmpty": "",
+                    "infoFiltered": "",
+                    "infoPostFix": "",
+                    "thousands": ".",
+                    "lengthMenu": "Registros a mostrar _MENU_",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "No se obtuvo ninguna coincidencia",
+                    oPaginate: {
+                        sNext: '<i class="fa fa-forward"></i>',
+                        sPrevious: '<i class="fa fa-backward"></i>',
+                        sFirst: '<i class="fa fa-step-backward"></i>',
+                        sLast: '<i class="fa fa-step-forward"></i>'
+                    }
+                }
+            });
+        });
+    </script>
+
+    {% endblock %}
+
+
+    {%endblock%}

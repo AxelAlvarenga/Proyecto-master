@@ -105,7 +105,7 @@ function updateShoppingCartTotal() {
       shoppingCartItemQuantityElement.value
     );
     total = total + shoppingCartItemPrice * shoppingCartItemQuantity ;
-    document.getElementById("cant").value = shoppingCartItemQuantity;
+    document.getElementById("canti").value = shoppingCartItemQuantity;
   });
   shoppingCartTotal.innerHTML = `${total.toFixed(0)} Gs`;
   document.getElementById("resultado").value = total.toFixed(0)

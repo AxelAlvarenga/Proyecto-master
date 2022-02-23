@@ -190,12 +190,28 @@ def editclientes(request, cliente_actual=0):
     else:
         return redirect('login')
 
-def reportescliente(request):
+def reportescliente(request, usuario_actual=0):
     if request.session.get("cod_usuario"):
         listatabla=venta.objects.all()
         listacliente=cliente.objects.all()
         listametodo=metodo_pago.objects.all()
-        return validar(request, "reportes_cliente.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo})
+        listaaudicl=cliente_audi.objects.all()
+        listaaudiprod=producto_audi.objects.all()
+        listaaudiprov=proveedor_audi.objects.all()
+        if request.method=="GET":
+            usu_actual=venta.objects.filter(codigo_cliente_venta_id = usuario_actual).exists()
+            if usu_actual:
+                datos_usuario=venta.objects.filter(codigo_cliente_venta_id=usuario_actual).first()
+                return validar(request, "reportes_cliente.html", {"datos_act":datos_usuario, "usuario_actual":usuario_actual,"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo,"listaaudicl":listaaudicl,"listaaudiprod":listaaudiprod,"listaaudiprov":listaaudiprov})
+            else:
+                return validar(request, "reportes_cliente.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo,"listaaudicl":listaaudicl,"listaaudiprod":listaaudiprod,"listaaudiprov":listaaudiprov})
+        # if request.method=="POST":
+        #     if usuario_actual!=0:
+        #         usuario_actual=venta.objects.get(codigo_cliente_venta_id=usuario_actual)
+        #         usuario_actual.metodo_de_pago_id=request.POST.get("metodo")
+        #         usuario_actual.save() 
+
+        return redirect ("../reportes_cliente")
     else:
          return redirect('login')    
 
@@ -343,6 +359,7 @@ def venta_detalle(request):
         cantidad_detalle=request.POST.get('cant_producto'),
         subtotal=request.POST.get('subtotal_factura_venta'))
         factura_venta_deta.save()
+
     error = 'No hay error!'
     response = JsonResponse({'error':error})
     response.status_code = 201
@@ -470,3 +487,9 @@ def cerrar_caja(request, caja_actual=0):
             return redirect("../movimiento_caja")   
     else:
             return redirect('login')
+
+
+
+
+
+
