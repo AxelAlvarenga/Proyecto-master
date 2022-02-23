@@ -4,21 +4,21 @@
     <form action="{% url 'cargar_proveedor' proveedor_actual %}" onsubmit="notifySuccess(this); return false" method="POST">
         {% csrf_token %}
         <div class="forma">
-            <label for="ingresar-codigo">Nombre completo</label>
-            <input type="text" class="form-control" id="formGroupExampleInput2" name="nombre_proveedor"
-                value="{{datos_act.nombre_proveedor}}">
+            <label for="nombre-completo">Nombre completo</label>
+            <input type="text" class="form-control" id="nombre-completo" name="nombre_proveedor"
+                value="{{datos_act.nombre_proveedor}}"required>
 
-            <label for="ingresar-precio-compra">Ruc</label>
-            <input type="text" class="form-control" id="formGroupExampleInput4" name="ruc_proveedor"
-                value="{{datos_act.ruc_proveedor}}">
+            <label for="ruc">Ruc</label>
+            <input type="text" class="form-control" id="ruc" name="ruc_proveedor"
+                value="{{datos_act.ruc_proveedor}}"required>
 
-            <label for="ingresar-cantidad">Telefono</label>
-            <input type="text" class="form-control" id="formGroupExampleInput5" name="Telefono_proveedor"
-                value="{{datos_act.Telefono_proveedor}}">
+            <label for="Telefono">Telefono</label>
+            <input type="text" class="form-control" id="Telefono" name="Telefono_proveedor"
+                value="{{datos_act.Telefono_proveedor}}"required>
 
-            <label for="ingresar-cantidad">Direccion</label>
-            <input type="text" class="form-control" id="formGroupExampleInput5" name="direccion_proveedor"
-                value="{{datos_act.direccion_proveedor}}">
+            <label for="Direccion">Direccion</label>
+            <input type="text" class="form-control" id="Direccion" name="direccion_proveedor"
+                value="{{datos_act.direccion_proveedor}}" required>
 
 
         </div>

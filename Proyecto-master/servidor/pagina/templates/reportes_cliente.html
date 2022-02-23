@@ -1,6 +1,7 @@
 {%extends 'cabecera.html'%}
 {% load static %}
 {%block cabecera%}
+
 <div class="dataTable-container" style="overflow-y:auto;">
     <table class="table table-striped dataTable-table" id="tabla">
         <thead>
@@ -11,20 +12,22 @@
                         class="dataTable-sorter">fecha de la venta</a></th>
                 <th data-sortable="" style="width: 26.7434%;"><a href="#"
                         class="dataTable-sorter">total a pagar</a></th>
+                <th data-sortable="" style="width: 26.7434%;"><a href="#"
+                            class="dataTable-sorter">tipo de pago</a></th>
 
             </tr>
         </thead>
 
-        {%for lista in listatabla%}
+        {%for lista in parameters.listatabla%}
             
                 <tr>
-                {%for cliente in listacliente%}
-                    {% if cliente.codigo_cliente == lista.codigo_cliente_venta %}
+                {%for cliente in parameters.listacliente%}
+                    {% if cliente.codigo_cliente == lista.codigo_cliente_venta_id %}
                     <td>{{cliente.nombre_cliente}}</td>
                     {%endif%}
                 {%endfor%}
                     <td>{{lista.fecha_venta}}</td>
-                    <td>{{lista.total_venta}}</td>
+                    <td>{{lista.total}}</td>
                 {%if lista.metodo_de_pago_id == 1%}
                     <th data-sortable=""><a href=""
                             class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
@@ -33,7 +36,7 @@
                             pagar
                         </a>
                 {%else%}
-                {%for metodo in listametodo%}
+                {%for metodo in parameters.listametodo%}
                     {%if lista.metodo_de_pago_id == metodo.codigo_metodo_pago%}
                             <td>{{metodo.nombre_metodo_pago}}</td>
                     {%endif%}

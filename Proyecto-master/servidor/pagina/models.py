@@ -1,6 +1,6 @@
 
 from django.db import models
-
+from datetime import datetime
 # Create your models here.
 
 
@@ -76,29 +76,31 @@ class caja(models.Model):
     fecha_caja=models.DateField()
     hora_caja=models.TimeField()
     motivo_caja=models.CharField(max_length = 50, null=True)
-    entrada_caja=models.CharField(max_length = 50, null=True)
-    salida_caja=models.CharField(max_length = 50, null=True)
+    entrada_caja=models.IntegerField()
+    salida_caja=models.IntegerField()
     tipo_mov=models.IntegerField(null=True)
     nombre_usuario = models.ForeignKey(Usuarios ,on_delete=models.CASCADE,null=True)
-    total_caja=models.CharField(max_length = 50, null=True)
+    total_caja=models.IntegerField()
 
 class venta(models.Model):
     codigo_venta=models.AutoField(primary_key=True)
-    codigo_cliente_venta = models.IntegerField()
-    fecha_venta =models.DateField()
+    codigo_cliente_venta =models.ForeignKey(cliente ,on_delete=models.CASCADE,null=True)
+    fecha_venta =models.DateField(default=datetime.now)
     metodo_de_pago = models.ForeignKey(metodo_pago, on_delete=models.CASCADE)
-    total_venta =models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    subtotal_venta=models.DecimalField(default=0.00, max_digits=9, decimal_places=2,null=True)
     iva=models.DecimalField(default=0.00, max_digits=9, decimal_places=2, null=True)
-    cantidad_detalle=models.IntegerField()
-    nombre_producto_venta=models.CharField(max_length=50)
-    codigo_producto=models.CharField(max_length=50)
-    productos=models.ManyToManyField(producto, through="detalle_venta")
+    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+class Order (models.Model):
+    order_id = models.AutoField(primary_key=True)
+    orden = models.IntegerField(null=True)
+    codigo_venta = models.ForeignKey(venta ,on_delete=models.CASCADE,null=True)
+    codigo_producto = models.IntegerField()
+    precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad = models.IntegerField()    
 
 class detalle_venta(models.Model):
     venta_detalle=models.AutoField(primary_key=True)
     venta=models.ForeignKey(venta, on_delete=models.CASCADE)
     producto_detalle=models.ForeignKey(producto, on_delete=models.CASCADE)
-    precio_detalle=models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad_detalle=models.IntegerField()
     subtotal=models.DecimalField(default=0.00, max_digits=9, decimal_places=2)

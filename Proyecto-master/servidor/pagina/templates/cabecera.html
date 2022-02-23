@@ -61,6 +61,41 @@
         <script src="{% static 'assets/js/pages/dashboard.js'%}"></script>
         <script src="{% static 'assets/js/main.js'%}"></script>
         <script src="{% static 'assets/js/jquery-3.6.0.js'%}"></script>
+        <link rel="stylesheet" href="{% static 'assets/css/validar.css'%}">
+        <!--dataTable-->
+  <script src="{% static 'assets/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+  <script src="{% static 'assets/vendors/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+  <script>
+    $(document).ready(function() {
+        $('#datos').DataTable( {
+            "language": {
+                "emptyTable":     "No existen registros a exponer.",
+                "info":           "",
+                "infoEmpty":      "",
+                "infoFiltered":   "",
+                "infoPostFix":    "",
+                "thousands":      ".",
+                "lengthMenu":     "Registros a mostrar _MENU_",
+                "loadingRecords": "Cargando...",
+                "processing":     "Procesando...",
+                "search":         "Buscar:",
+                "zeroRecords":    "No se obtuvo ninguna coincidencia",
+                oPaginate: {
+                    sNext: '<i class="fa fa-forward"></i>',
+                    sPrevious: '<i class="fa fa-backward"></i>',
+                    sFirst: '<i class="fa fa-step-backward"></i>',
+                    sLast: '<i class="fa fa-step-forward"></i>'
+                    }
+            }
+        });
+    });
+  </script>
 
-        {%block cabecera%}
-        {%endblock%}
+{%block cabecera%}
+{%endblock%}

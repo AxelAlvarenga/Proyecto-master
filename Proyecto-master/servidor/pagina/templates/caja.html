@@ -1,6 +1,7 @@
 {%extends 'cabecera.html'%}
 {% load static %}
 {%block cabecera%}
+
 <body>
     <div>
         <div>
@@ -9,12 +10,15 @@
                     Retirar dinero
                 </button}>
             </a>
+           
+        
+            </imput>
             <a>
-                <form class="abrir-caja-input"  action="{% url 'cerrar_caja' caja_actual %}" id="formCliente" method="POST" style="visibility: hidden;">  
+                <form class="abrir-caja-input"  action="{% url 'cerrar_caja' parameters.caja_actual %}" id="formulario" method="POST" style="visibility: hidden;">  
                             {% csrf_token %} 
                             <input style="display: none;" name="nombredelusuario" value="{{nombre_completo}}">
-                            <input  type="text" class="clienteptex" name="entrada_caja" value="{{datos_act.entrada_caja}}" style="display: none;"> 
-                            {% for lista in listausuario %}
+                             
+                            {% for lista in parameters.listausuario %}
                             <input value="{{lista.cod_usuario}}" {% if lista.cod_usuario == datos_act.nombre_usuario_id%} {{lista.nombre_usuario}} {% endif %} style="visibility: hidden;">
                             </input>
                             {% endfor %}
@@ -23,7 +27,7 @@
                             <input type="date" id="fechaActual" name="fecha_caja" value="{{datos_act.fecha_caja}}" style="display: none;">
                             <input type="text" id="currentTime"  name="hora_caja" value="{{datos_act.hora_caja}}" style="display: none;">
                             <input style="display: none;" name="tipo_mov" value="3" type="number">
-                        <button class="cerrar-caja" onclick="checker()" onfocusout="suma(this)" type="submit" > 
+                        <button class="cerrar-caja" onclick="checker()" type="submit" > 
                             cerrar caja
                         </button>
                 </form>
@@ -62,10 +66,10 @@
                        
                     </tr>
                 </thead>
-                {%for lista in listatabla %}
+                {%for lista in parameters.listatabla %}
                     <tr>
                         
-                        {%for usuario in listausuario %}
+                        {%for usuario in parameters.listausuario %}
                         {%if usuario.cod_usuario == lista.nombre_usuario_id%}
                         <td>{{usuario.nombre_usuario}}</td>
                         {%endif%}
@@ -80,19 +84,19 @@
                         {%if lista.tipo_mov == 1 %}<td>Retirar</td>{% endif %} 
                         {%if lista.tipo_mov == 2 %}<td>Apertura</td>{% endif %}
                         {%if lista.tipo_mov == 3 %}<td>cierre</td>{% endif %}
-                        {% if lista.entrada_caja == null %}
-                        <td>--------</td>
+                        {% if lista.entrada_caja == none %}
+                        <td>0</td>
                         {% else %}
-                        <td>{{lista.entrada_caja}}</td>
+                        <td id="entrada_caja1">{{lista.entrada_caja}}</td>
                         {% endif %}
                         {% if lista.salida_caja == null %}
-                        <td>-------</td>
+                        <td>0</td>
                         {% else %}
-                        <td>{{lista.salida_caja}}</td>
+                        <td id="salida_caja1">{{lista.salida_caja}}</td>
                         {% endif %}
                     </tr> 
 
-                {%endfor%} 
+                {%endfor %} 
                            
                
             </table>
@@ -100,6 +104,7 @@
 
         </div>
         <div>
+          
             <label data-sortable="" style="width: 23.2012%;" id="total_caja" onfocusout="suma(this)">Total:</label>
         </div>  
     </div>
@@ -132,27 +137,9 @@
     }
 </script>
 <script>
-    function suma(event){
-        var total = 0
-        var total_caja = document.getElementById("total_caja")
-        {% for lista in listatabla %}
-            if({{lista.entrada_caja}}){
-                total+=parseInt("{{lista.entrada_caja}}")
-            } else {
-                total+=0
-            }
+    var x = document.getElementById("entrada_caja")
+    console.log(x)
+</script>
 
-            if({{lista.salida_caja}}){
-                total-=parseInt("{{lista.salida_caja}}")
-            } else {
-                total-=0
-            }
-        {% endfor %}
-
-        total_caja = total
-        
-    }
-    suma()
-</script>  
 
 {%endblock%}

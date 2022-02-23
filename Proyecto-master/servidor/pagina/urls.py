@@ -19,6 +19,7 @@ path('abrir_caja/<int:caja_actual>', views.abrir_caja ,name='abrir_caja'),
 path('cerrar_caja/<int:caja_actual>', views.cerrar_caja ,name='cerrar_caja'),
 path('cargar_categoria/<int:categoria_actual>', views.editcategoria ,name='cargar_categoria'),
 path('retirar_caja/<int:caja_actual>', views.retirar_caja ,name='retirar_caja'),
-path('punto_venta', views.punto_venta ,name='punto_venta')
+path('punto_venta', views.punto_venta ,name='punto_venta'),
+path('venta_detalle', views.venta_detalle ,name='venta_detalle')
 
 ]

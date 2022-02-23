@@ -46,7 +46,7 @@
                                 </tr>
                             </thead>
 
-                            {%for lista in listatabla%}
+                            {%for lista in parameters.listatabla%}
 
                             <tr>
 
@@ -55,7 +55,7 @@
                                 <td>{{lista.preciocompra_productos}}</td>
                                 <td>{{lista.precioventa_productos}}</td>
 
-                                {% for categoria in listacategoria %}
+                                {% for categoria in parameters.listacategoria %}
                                 {% if categoria.codigo_categoria == lista.categoria_productos %}
                                 <td>{{categoria.nombre_categoria}}</td>
                                 {% endif %}

@@ -5,17 +5,17 @@
 <div>
     <div>
         {% csrf_token %} 
-        <input style="display: none;" name="nombredelusuario" value="{{nombre_completo}}">>
+        <input style="display: none;" name="nombredelusuario" value="{{nombre_completo}}">
 
 
-        <label for="ingresar-nombre"> Ingresar monto para abrir la caja </label>
-        <input type="text" class="clienteptex" name="entrada_caja" value="{{datos_act.entrada_caja}}"> 
+        <label for="ingresar-caja"> Ingresar monto para abrir la caja </label>
+        <input type="text" id="ingresar-caja" class="clienteptex" name="entrada_caja" value="{{datos_act.entrada_caja}}" required> 
         
         {% for lista in listausuario %}
         <input value="{{lista.cod_usuario}}" {% if lista.cod_usuario == datos_act.nombre_usuario_id%} {{lista.nombre_usuario}} {% endif %} style="visibility: hidden;">
         </input>
         {% endfor %}
-
+        <input type="text" class="form-control" id="ingresar-monto" name="salida_caja" value="0" style="visibility: hidden;">
         <input type="date" id="fechaActual" name="fecha_caja" value="{{datos_act.fecha_caja}}" style="visibility: hidden;">
         <input type="text" id="currentTime"  name="hora_caja" value="{{datos_act.hora_caja}}" style="visibility: hidden;">
         <input style="display: none;" name="tipo_mov" value="2" type="number">

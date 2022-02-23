@@ -9,15 +9,15 @@
         <div class="forma">
   
 
-            <label for="ingresar-nombre">Nombre completo </label>
-            <input type="text" class="form-control" id="formGroupExampleInput1" name="nombre_completo_usuario" value="{{datos_act.nombre_completo_usuario}}">
+            <label for="ingresar-nombre-completo">Nombre completo </label>
+            <input type="text" class="form-control" id="ingresar-nombre-completo" name="nombre_completo_usuario" value="{{datos_act.nombre_completo_usuario}}" required>
 
 
-            <label for="ingresar-codigo">Nombre </label>
-            <input type="text" class="form-control" id="formGroupExampleInput2" name="nombre_usuario" value="{{datos_act.nombre_usuario}}">
+            <label for="ingresar-nombre">Nombre </label>
+            <input type="text" class="form-control" id="ingresar-nombre" name="nombre_usuario" value="{{datos_act.nombre_usuario}}" required>
 
-            <label for="ingresar-precio-compra">contraseña</label>
-            <input type="text" class="form-control" id="formGroupExampleInput3" name="password_usuario" value="{{datos_act.password_usuario}}">
+            <label for="ingresar*contraseña">contraseña</label>
+            <input type="text" class="form-control" id="ingresar*contraseña" name="password_usuario" value="{{datos_act.password_usuario}}" required>
             <select class="dataTable-selector form-select" name="tipo_usuario">
                 {%if parameters.datos_act.tipo_usuario == 1 %}
                 <option value="1" id="opcion_select" selected>Administrador</option>

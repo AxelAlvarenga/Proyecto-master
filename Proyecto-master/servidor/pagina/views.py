@@ -1,8 +1,12 @@
-from msilib.schema import ListView
-from re import M
-from django.http import request
+import json
+from django.db import models
+from django.http import JsonResponse, request,HttpResponse
 from django.shortcuts import render, redirect
 from pagina.models import *
+from django.views.generic import ListView
+from datetime import date
+
+
 
 
 def login(request):
@@ -31,8 +35,8 @@ def login(request):
 
 def validar(request, pageSuccess , parameters={}):
     if request.session.get("cod_usuario"):
-        if (request.session.get("tipo_usuario") == 2) and ((pageSuccess == 'cargar_cliente.html')):
-            return render(request, "reportes_cliente", {"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario"), "mensaje": "Este usuario no cuenta con los privilegios suficientes"})
+        if (request.session.get("tipo_usuario") == 2) and ((pageSuccess == 'cargar_cliente.html')) and ((pageSuccess == 'cargar_compra.html')) :
+            return render(request, "reportes_cliente.html", {"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario"), "mensaje": "Este usuario no cuenta con los privilegios suficientes"})
         else: 
             return render(request, pageSuccess, {"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario"), "parameters": parameters})
     else:
@@ -51,21 +55,32 @@ def salir(request):
     request.session.flush()
     return redirect("./")
 
+
+
 class listaproductos(ListView):
+    model=producto
+    template_name='pagina/cargar_compra'
+
     def get_queryset(self):
         return self.model.objects.filter(cod_usuario=True)
-    def get(self , request, *args, **kwargs):
-        lista_productos=[]
-        for producto in self.get_queryset():
-            data_producto={}
-            data_producto["id"]=producto.codigo_producto
-            data_producto["nombre"]=producto.nombre_productos
-            data_producto["precio"]=producto.precioventa_productos
-            data_producto["categoria"]=producto.categoria_productos
-            data_producto["cantidad"]=producto.cantidad_productos
-            lista_productos.append(data_producto)
-        print(lista_productos)
-        return render(request, self)
+
+    def get(self , request, *args, **Kwargs):
+        if request.is_ajax():
+            lista_productos=[]
+
+            for producto in self.get_queryset():
+                data_producto = {}
+                data_producto['id']=producto.codigo_producto
+                data_producto['nombre']=producto.nombre_productos
+                data_producto['precio']=producto.precioventa_productos
+                data_producto['categoria']=producto.categoria_productos
+                data_producto['cantidad']=producto.cantidad_productos
+                lista_productos.append(data_producto)
+            data=json.dumps(lista_productos)
+             
+            return HttpResponse(data, 'aplication/json')
+        else:
+            return render (request, self.template_name)
 
 def cargar_compra(request):
 
@@ -73,7 +88,7 @@ def cargar_compra(request):
         listaproveedor=proveedor.objects.all()
         listacategoria = categoria.objects.all()
         listatabla=producto.objects.all()
-        return render(request, "cargar_compra.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla, "listacategoria":listacategoria, "listaproveedor":listaproveedor})
+        return validar(request, "cargar_compra.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla, "listacategoria":listacategoria, "listaproveedor":listaproveedor})
     else:
             return redirect('login')
 
@@ -89,10 +104,10 @@ def editproducto(request, producto_actual=0):
             product_actual=producto.objects.filter(codigo_productos=producto_actual).exists()
             if product_actual:
                 datos_producto=producto.objects.filter(codigo_productos=producto_actual).first()
-                return render(request, 'editproducto.html',
+                return validar(request, 'editproducto.html',
                 {"datos_act":datos_producto, "producto_actual":producto_actual, "titulo":"Editar Usuario", "listacategoria":listacategoria, "listaproveedor":listaproveedor})
             else:
-                return render(request, "editproducto.html",
+                return validar(request, "editproducto.html",
                 {"nombre_completo":request.session.get("nombredelusuario"), "producto_actual":producto_actual, "titulo":"Cargar Usuario", "listacategoria":listacategoria ,"listaproveedor":listaproveedor})
 
         if request.method=="POST":
@@ -180,7 +195,7 @@ def reportescliente(request):
         listatabla=venta.objects.all()
         listacliente=cliente.objects.all()
         listametodo=metodo_pago.objects.all()
-        return render(request, "reportes_cliente.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo})
+        return validar(request, "reportes_cliente.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo})
     else:
          return redirect('login')    
 
@@ -294,38 +309,44 @@ def editcategoria(request, categoria_actual=0):
     else:
             return redirect('login')
 
-def punto_venta(request, venta_actual=0):
+def punto_venta(request):
     if request.session.get("cod_usuario"):
-            listacliente=cliente.objects.all()
+        if request.method == "GET":
             listatabla=producto.objects.all()
+            listacliente=cliente.objects.all()
             listametodo=metodo_pago.objects.all()
-            listadetalle=detalle_venta.objects.all()
-            if request.method=="GET":
-                venta_actual=venta.objects.filter(codigo_venta=venta_actual).exists()
-                if venta_actual:
-                    datos_venta=venta.objects.filter(codigo_venta=venta_actual).first()
-                    return render(request, "punto_venta.html", {"datos_act":datos_venta,"venta_actual":venta_actual,"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo,"listadetalle":listadetalle })
-                else:
-                    return render(request, "punto_venta.html", {"nombre_completo":request.session.get("nombredelusuario"),"venta_actual":venta_actual,"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo,"listadetalle":listadetalle })
-            if request.method=="POST":
-                if venta_actual==0:
-                    venta_nuevo=venta(codigo_venta=request.POST.get('codigo_venta'),
-                    fecha_venta=request.POST.get('fecha_venta'),
-                    total_venta=request.POST.get('resultado'),
-                    subtotal_venta=request.POST.get('subtotal_venta'),
-                    iva=request.POST.get('iva'),
-                    codigo_cliente_venta=request.POST.get("codigo_cliente_venta"),
-                    cantidad_detalle=request.POST.get("cantidad"),
-                    metodo_de_pago_id=request.POST.get("metodo_pago"),
-                    nombre_producto_venta=request.POST.get("nombre"),
-                    codigo_producto=request.POST.get("codigoprod"))
-                    venta_nuevo.save()
+            return validar(request, "punto_venta.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo})
 
-                   
-                    
-            return redirect("../punto_venta")
+        elif request.method == "POST":
+            print(request.POST.get('codigo_cliente'))
+            factura_venta_nueva=venta(codigo_cliente_venta_id=request.POST.get('codigo_cliente'),
+            fecha_venta = date.today(),
+            total=request.POST.get('total_factura_venta'), 
+            iva=request.POST.get('iva10_factura_venta'),
+            metodo_de_pago_id=request.POST.get('metodo_pago'))
+            factura_venta_nueva.save()
+
+        error = 'No hay error!'
+        response = JsonResponse({'error':error})
+        response.status_code = 201
+        return response
+
     else:
-            return redirect('login')
+        return redirect("login")
+            
+def venta_detalle(request):
+    if request.method == "POST":
+        id_ultima_factura=venta.objects.all().last().codigo_venta
+
+        factura_venta_deta=detalle_venta(venta_id=int(id_ultima_factura), 
+        producto_detalle_id=request.POST.get('id_producto_id'),
+        cantidad_detalle=request.POST.get('cant_producto'),
+        subtotal=request.POST.get('subtotal_factura_venta'))
+        factura_venta_deta.save()
+    error = 'No hay error!'
+    response = JsonResponse({'error':error})
+    response.status_code = 201
+    return response
 
 def borrarproducto(request,producto_actual ):
 
@@ -426,10 +447,10 @@ def cerrar_caja(request, caja_actual=0):
             caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
             if caj_actual:
                 datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
-                return render(request, 'caja.html',
+                return validar(request, 'caja.html',
                 {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listatabla":listatabla,"listausuario":listausuario,"listaventa":listaventa})
             else:
-                return render(request, "caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listatabla":listatabla,"listausuario":listausuario, "listaventa":listaventa})
+                return validar(request, "caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listatabla":listatabla,"listausuario":listausuario, "listaventa":listaventa})
 
         if request.method=="POST":
             datos_usuario=Usuarios.objects.filter(nombre_usuario=request.POST.get('nombredelusuario')).first()

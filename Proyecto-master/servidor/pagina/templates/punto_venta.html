@@ -49,16 +49,14 @@
         grid-gap: 2em;
     }
 </style>
-
-<form action="{% url 'punto_venta' %}" onsubmit="notifySuccess(this); return false" method="POST">
-    {% csrf_token %}   
+  
     
     <div class="container">
         <div class="clientept">
             <div>
-                <label for="ingresar-nombre">Cedula de cliente </label>
+                <label for="cedula">Cedula de cliente </label>
                 <input type="date" id="fechaActual" name="fecha_venta" value="{{datos_act.fecha_venta}}" style="visibility: hidden;">
-                <input type="number" class="clienteptex"  onchange="traerCliente(this);" name="codigo_cliente_venta" value="{{datos_act.codigo_cliente_venta}}" >
+                <input type="number" class="clienteptex" id="cedula" onchange="traerCliente(this);" name="codigo_cliente_venta" value="{{parameters.datos_act.codigo_cliente_venta}}" required >
               
     
             </div>
@@ -70,8 +68,8 @@
         <div>
             <label for="ingresar-nombre">Metodo de pago </label>
 
-            <select class="dataTable-selector form-select" name="metodo_pago">
-                {% for lista in listametodo%}
+            <select class="dataTable-selector form-select" id="pago_metodo" name="metodo_pago" >
+                {% for lista in parameters.listametodo%}
                 <option value="{{lista.codigo_metodo_pago}}" {% if lista.codigo_metodo_pago == datos_act.metodo_de_pago_id%} selected {% endif %}>
                     {{lista.nombre_metodo_pago}}
                 </option>
@@ -104,25 +102,28 @@
                             <div class="item">
                                 <section class="store">
                                         
-                                        <table class="table table-striped dataTable-table" id="tabla">
+                                        <table  class="table table-flush dataTable align-items-center" id="datos">
                                             <thead>
                                                 <tr>
                                                     <th data-sortable="dataTable-sorter" style="width: 10%;">Nombre</th>
                                                     <th data-sortable="dataTable-sorter" style="width: 10%;">Precio</th>
                                                     <th data-sortable="dataTable-sorter" style="width: 10%;">codigo</th>
+                                                    <th data-sortable="dataTable-sorter" style="width: 10%;">cantidad</th>
                                                     <th data-sortable="dataTable-sorter" style="width: 10%;"></th>
                                                 </tr>
                                             </thead>
                     
                                             <tbody>
-                                                {%for lista in listatabla%}
+                                                {%for lista in parameters.listatabla%}
                                                 <tr class="item">
                                                     <td class="item-title">{{lista.nombre_productos}}</td>
                                                     <td class="item-price">{{lista.precioventa_productos}}</td>
                                                     <td class="item-cod">{{lista.codigo_productos}}</td>
+                                                    <td>{{lista.cantidad_productos}}</td>
                                                     <td>
                                                         <a type="button" class="text-secondary font-weight-bold text-xs addToCart"><i
-                                                                class="fas fa-cart-plus"></i></a>
+                                                                class="fas fa-cart-plus"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                                 {%endfor%}
@@ -141,19 +142,20 @@
                                     <h1 class="text-center">Vender</h1>
                                     <hr>
                                     <div class="row">
-                                        <div class="col-4">
+                                        <div class="col-2
+                                        ">
                                             <div class="shopping-cart-header">
-                                                <h6>Producto</h6>
+                                                <h6>codigo</h6>
                                             </div>
                                         </div>
                                         <div class="col-2">
                                             <div class="shopping-cart-header">
-                                                <h6 class="text-truncate">Precio</h6>
+                                                <h6 class="text-truncate">producto</h6>
                                             </div>
                                         </div>
                                         <div class="col-2">
                                             <div class="shopping-cart-header">
-                                                <h6 class="text-truncate">codigo</h6>
+                                                <h6 class="text-truncate">precio</h6>
                                             </div>
                                         </div>
                                         <div class="col-4">
@@ -173,7 +175,7 @@
                                         <div class="col-12">
                                             <div class="shopping-cart-total d-flex align-items-center">
                                                 <p class="mb-0">Total</p>
-                                                <p class="ml-4 mb-0 shoppingCartTotal" id="total_venta">Gs.</p>
+                                                <p class="ml-4 mb-0 shoppingCartTotal" id="total">Gs.</p>
                                                 <div class="toast ml-auto bg-info" role="alert" aria-live="assertive" aria-atomic="true"
                                                     data-delay="2000">
                                                     <div class="toast-header">
@@ -194,7 +196,19 @@
                                             </div>
                                         </div>
                                     </div>
-                        
+                                    
+                                        <form class="venta" id="formCliente">
+                                            <input type="text" id="resultado" name="resultado" value="resultado" style="display: none;">
+                                            <input type="text" id="codigo" name="codigo" value="codigo" style="display: none;">
+                                            <input type="text" id="precio" name="precio" value="precio" style="display: none;">
+                                            <input type="text" id="cant" name="cant" value="cant" style="display: none;">
+                
+                                            <button class="btn-guardar" id="cargar" style="margin-right: 5px; margin-top: -1px;"
+                                                type="button">
+                                                Finalizar compra
+                                            </button>
+                                        </form>
+                                    
                                     <!-- END TOTAL -->
                         
                                     <!-- START MODAL COMPRA -->
@@ -218,44 +232,25 @@
                                         </div>
                                     </div>
                                     <!-- END MODAL COMPRA -->
-                        
+                                    
                         
                                 </div>
                         
                             </section>
+                            
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="button">
-        <form action="{% url 'punto_venta' %}" method="post">
-            {% csrf_token %}
-            <div style="visibility: hidden;">           
-            <input type="text" class="form-control" id="resultado" name="resultado" value="resultado">
-            <input type="text" class="form-control" id="codigoprod" name="codigoprod" value="codigoprod">
-            <input type="text" class="form-control" id="nombre" name="nombre" value="nombre">
-            <input type="text" class="form-control" id="cantidad" name="cantidad" value="cantidad">
-            </div>
- 
-            <button class="btn icon icon-left btn-primary round" type="submit">Guardar Venta</button>
-        </form>
-    </div>
-
-
-
-</form>
 </body>
 
 </html>
-
-
-
 <script>
-    function traerCliente(event) { //event es el input donde se carga el valor
+   function traerCliente(event) { //event es el input donde se carga el valor
         var flag = false
         var nCliente = document.getElementById("nombre_cliente") //traigo el label que se va a modificar con el nombre del cliente
-        {% for cliente in listacliente %}
+        {% for cliente in parameters.listacliente %}
             var ci_cliente = "{{cliente.codigo_cliente}}"   //se trae cedula del cliente
 
             if(event.value == ci_cliente) { //se compara si las cedulas de la base de datos coincide con el del input
@@ -272,7 +267,73 @@
             nCliente.innerHTML = "Nombre del Cliente:  "
         }
     }
+//DATOS FACTURA COMPRA DETALLE \\OBS: todos los atributos son extraidos de tienda.js\\
+	var unidades = document.getElementsByClassName("shoppingCartItem")
+	var codigos = document.getElementsByClassName("idDeUnidad")
+	var cantidades = document.getElementsByClassName("cantidadDeUnidad")
+	var precios = document.getElementsByClassName("precioDeUnidad")
+
+	document.getElementById("cargar").addEventListener("click", () => {   //Funcion que controla cuando se hace click en comprar
+		sessionStorage.setItem('1', 1)  //Se le dice al cookie de las alertas que cambie su valor a 1
+
+    //DATOS FACTURA COMPRA
+    var ruc_cliente = document.getElementById("cedula").value  //Trae RUC del Cliente
+    var metododepago=document.getElementById("pago_metodo").value
+    var total = document.getElementById("total").innerText.replaceAll(" Gs", "")  //Trae el Total de Venta
+    var iva10 = parseInt(total) / 11  //Calula el IVA 10% a partir del Total de Venta
+    var id_cliente = "" //Se crea variable para traer el codigo_cliente a travÃ©s de su RUC \\OBSERVACION: id_cliente es simplemente un nombre generico, es decir que no se trae el id del cliente, sino su codigo\\ 
+    var metodopago=""
+		{% for cliente in parameters.listacliente %}  //Iniciamos ciclo FOR de la tabla de clientes
+			if("{{cliente.codigo_cliente}}" == ruc_cliente ) { //Verificamos si el cliente introducido existe en la tabla de clientes
+				id_cliente = "{{cliente.codigo_cliente}}" //Si el cliente existe, se carga la variable id_cliente con el valor codigo_cliente
+			}
+		{% endfor %}
+        {% for lista in parameters.listametodo %}  //Iniciamos ciclo FOR de la tabla de clientes
+			if("{{lista.codigo_metodo_pago}}" == metododepago ) { //Verificamos si el cliente introducido existe en la tabla de clientes
+				metodopago = "{{lista.codigo_metodo_pago}}"
+                 //Si el cliente existe, se carga la variable id_cliente con el valor codigo_cliente
+			}
+		{% endfor %}
+
+
+		
+			$.ajax({  //Iniciando funcion de AJAX donde enviamos la venta
+			url: "{% url 'punto_venta' %}", //Direccion a donde AJAX debe enviar los datos
+			type: 'POST', //El metodo de envio. En este caso POST, porque enviamos datos a la base
+			data:{  //variables que seran enviadas al VIEWS dentro de los request.POST.get("")
+				'codigo_cliente': id_cliente,
+                'metodo_pago': metodopago,
+				'iva10_factura_venta': iva10,
+				'total_factura_venta': total,
+				'csrfmiddlewaretoken': '{{csrf_token}}' //CSRF_TOKEN que se suele utilizar en todos los FORMS
+			},
+			success: //Si se envian correctamente ejecutamos lo que se encuentre dentro de SUCCESS
+				function(data){ //Funcion que envia el DETALLE de la venta
+					for(let i=0; i < unidades.length; i++) {  //Iniciamos un for que utiliza la variable *unidades*. Esta variable almacena todos los elementos cargados y utilizamos el atributo *lenght* para contabilizar esos elementos
+						$.ajax({  //Iniciando nuevamente funcion AJAX
+							url: "{% url 'venta_detalle' %}", //Direccion a donde AJAX debe enviar los datos
+							type: 'POST', //El metodo de envio. En este caso POST, porque enviamos datos a la base
+							data:{ //variables que seran enviadas al VIEWS dentro de los request.POST.get("")
+								'id_producto_id': codigos[i].innerText,
+								'cant_producto': cantidades[i].value,
+								'subtotal_factura_venta': parseInt(cantidades[i].value) * parseInt(precios[i].innerText),
+								'csrfmiddlewaretoken': '{{csrf_token}}'
+							},
+							success: //Si se envian correctamente ejecutamos lo que se encuentre dentro de SUCCESS
+								function(data){
+									if ((unidades.length - 1) == i){  //Cuando el for recorra el ultimo elemento cargado, se redireccionara al usuario
+										location.href = './punto_venta'
+									}
+									console.log("Yuju!")
+								}
+						})
+					}
+				}
+			})
+	})
 </script>
+
+
 
 <script src="{% static 'assets/js/tienda.js'%}"></script>
 <script src="{% static 'assets/js/search.js' %}"></script> <!-- Script para busqueda-->
@@ -289,6 +350,7 @@
         document.getElementById('fechaActual').value = ano + "-" + mes + "-" + dia;
     } 
 </script>
+
 
 
 {%endblock%}

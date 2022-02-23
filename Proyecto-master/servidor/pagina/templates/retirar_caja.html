@@ -6,11 +6,11 @@
     <input style="display: none;" name="nombredelusuario" value="{{nombre_completo}}">
 <div>
     <div class="forma">
-        <label for="ingresar-codigo">Ingresar monto no superior al actual: </label> 
-        <input type="text" class="form-control" id="formGroupExampleInput2" name="salida_caja" value="{{datos_act.salida_caja}}" >
-        <label for="ingresar-codigo">Ingresar motivo(max 50 caract.)</label>
-        <input type="text" class="form-control" id="formGroupExampleInput2" name="motivo_caja" value="{{datos_act.motivo_caja}}">
-
+        <label for="ingresar-monto">Ingresar monto no superior al actual: </label> 
+        <input type="text" class="form-control" id="ingresar-monto" name="salida_caja" value="{{datos_act.salida_caja}}"required >
+        <label for="ingresar-motivo">Ingresar motivo(max 50 caract.)</label>
+        <input type="text" class="form-control" id="ingresar-motivo" name="motivo_caja" value="{{datos_act.motivo_caja}}"required>
+        <input  type="text" class="clienteptex" name="entrada_caja"  value="0" style="visibility:hidden;">
 
         {% for lista in listausuario %}
         <input value="{{lista.cod_usuario}}" {% if lista.cod_usuario == datos_act.nombre_usuario_id%} {{lista.nombre_usuario}} {% endif %} style="visibility: hidden;">

@@ -1,0 +1,115 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> ARM Admin </title>
+
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/css/font_awesome/css/all.min.css'%}">
+
+    <link rel="stylesheet" href="{% static 'assets/vendors/chartjs/Chart.min.css'%}">
+
+    <link rel="stylesheet" href="{% static 'assets/vendors/perfect-scrollbar/perfect-scrollbar.css'%}">
+    <link rel="stylesheet" href="{% static 'assets/css/app.css'%}">
+    <link rel="shortcut icon" href="{% static 'assets/images/ARMLOGO.png'%}" type="image/x-icon">
+     
+</head>
+
+<body>
+
+
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper active">
+                <div class="sidebar-header">
+                    <center>
+                        <img src="{% static 'assets/images/ARMLOGO.png'%}" alt="" srcset="">
+                    </center>
+                </div>
+                <div class="sidebar-menu">
+                    <ul class="menu">
+                        <li class='sidebar-title'>Mi Menú </li>
+
+                        
+                        <li class="sidebar-item" id="sidebar-item7">
+                            
+                            <a href="{% url 'movimiento_caja'%}"class='sidebar-link'>
+                                <i class="fas fa-paste"></i>
+                                <span>Caja</span>
+                            </a>
+        
+        
+                        </li>
+
+
+                        
+                        <li class="sidebar-item" id="sidebar-item4">
+                            <a href="{% url 'punto_venta' %}" class="sidebar-link">
+                                <i class="fas fa-cart-plus"></i>
+                                
+                                <span>Punto Venta</span>
+                            </a>
+                        </li>
+
+
+                        <li class="sidebar-item" id="sidebar-item3">
+                            <a href="{% url 'reportes_cliente'%}"class='sidebar-link'>
+                                <i class="fas fa-paste"></i>
+                                <span>Reportes</span>
+                            </a>
+
+
+                        </li>
+
+
+                    </ul>
+                </div>
+
+
+</body>
+
+</html>
+
+{%block cuerpo%}
+{%endblock%}
+{% block extrajs%}
+{%endblock extrajs%}
+<script>
+    //SE TRAE LOS ELEMENTOS DE HTML AL JAVASCRIPT
+    var sidebar = document.getElementById('sidebar-item1')
+    var sidebar2 = document.getElementById('sidebar-item2')
+    var sidebar3 = document.getElementById('sidebar-item3')
+    var sidebar4 = document.getElementById('sidebar-item4')
+    var sidebar5 = document.getElementById('sidebar-item5')
+    var sidebar6 = document.getElementById('sidebar-item6')
+    var sidebar7 = document.getElementById('sidebar-item7')
+
+    //SE TRAE LOS ELEMENTOS DE HTML AL JAVASCRIPT
+
+    //SE VALIDA EN QUE RUTA ESTAS POSICIONADO
+    if (window.location.pathname == '/pagina/editclientes/0') {
+        //SE LE AÑADE EL ATRIBUTO active PARA QUE QUEDE MARCADO
+        sidebar.className += ' active'
+    } else if (window.location.pathname == '/pagina/buscar'|| window.location.pathname == '/pagina/inicio') {
+        sidebar2.className += ' active'
+    
+    }else if (window.location.pathname == '/pagina/reportes_cliente'){
+        sidebar3.className += ' active'
+    }
+    else if (window.location.pathname == '/pagina/cargar_proveedor/0'){
+        sidebar5.className += ' active'
+    }
+    else if (window.location.pathname == '/pagina/cargar_compra'){
+        sidebar6.className += ' active'
+    }
+    else if (window.location.pathname == '/pagina/movimiento_caja'){
+        sidebar7.className += ' active'
+    }
+    else if (window.location.pathname == '/pagina/punto_venta'){
+        sidebar4.className += ' active'
+    }
+</script>
