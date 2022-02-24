@@ -14,12 +14,14 @@ path('cargar_proveedor/<int:proveedor_actual>', views.editproveedor , name='carg
 path('modusuarios/<int:usuario_actual>',views.modusuarios, name='modusuarios'),
 path('borusuario/<int:usuario_actual>',views.borusuario, name='borusuario'),
 path('cargar_compra', views.cargar_compra ,name='cargar_compra'),
-path('movimiento_caja', views.cerrar_caja ,name='movimiento_caja'),
+path('movimiento_caja/<int:caja_actual>', views.cerrar_caja ,name='movimiento_caja'),
 path('abrir_caja/<int:caja_actual>', views.abrir_caja ,name='abrir_caja'),
-path('cerrar_caja/<int:caja_actual>', views.cerrar_caja ,name='cerrar_caja'),
 path('cargar_categoria/<int:categoria_actual>', views.editcategoria ,name='cargar_categoria'),
 path('retirar_caja/<int:caja_actual>', views.retirar_caja ,name='retirar_caja'),
 path('punto_venta', views.punto_venta ,name='punto_venta'),
+path('pagar/<int:usuario_actual>', views.pagar ,name='pagar'),
+path('error_acceso', views.error_acceso ,name='error_acceso'),
+
 path('venta_detalle', views.venta_detalle ,name='venta_detalle')
 
 ]

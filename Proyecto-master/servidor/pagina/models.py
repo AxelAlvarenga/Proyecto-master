@@ -71,16 +71,7 @@ class producto_audi(models.Model):
     cod_usuario=models.IntegerField()
     nombre_usuario = models.CharField(max_length = 50)
 
-class caja(models.Model):
-    codigo_caja=models.AutoField(primary_key=True)
-    fecha_caja=models.DateField()
-    hora_caja=models.TimeField()
-    motivo_caja=models.CharField(max_length = 50, null=True)
-    entrada_caja=models.IntegerField()
-    salida_caja=models.IntegerField()
-    tipo_mov=models.IntegerField(null=True)
-    nombre_usuario = models.ForeignKey(Usuarios ,on_delete=models.CASCADE,null=True)
-    total_caja=models.IntegerField()
+
 
 class venta(models.Model):
     codigo_venta=models.AutoField(primary_key=True)
@@ -104,3 +95,18 @@ class detalle_venta(models.Model):
     producto_detalle=models.ForeignKey(producto, on_delete=models.CASCADE)
     cantidad_detalle=models.IntegerField()
     subtotal=models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+class caja(models.Model):
+    codigo_caja=models.AutoField(primary_key=True)
+    fecha_caja=models.CharField(max_length = 50)
+    hora_caja=models.CharField(max_length = 50)
+    motivo_caja=models.CharField(max_length = 50, null=True)
+    entrada_caja=models.DecimalField(default=0.00, max_digits=12, decimal_places=2,null=True)
+    salida_caja=models.DecimalField(default=0.00, max_digits=12, decimal_places=2,null=True)
+    tipo_mov=models.IntegerField(null=True)
+    nombre_usuario = models.ForeignKey(Usuarios ,on_delete=models.CASCADE,null=True)
+    total_caja=models.IntegerField()
+
+class cajaDinero(models.Model):
+    codigo_caja_dinero=models.AutoField(primary_key=True)
+    Caja1=models.DecimalField(default=0.00, max_digits=12, decimal_places=2)

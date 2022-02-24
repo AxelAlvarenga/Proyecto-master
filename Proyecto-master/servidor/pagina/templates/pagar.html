@@ -1,0 +1,32 @@
+{%extends 'cabecera.html'%}
+{% load static %}
+{%block cabecera%}
+<form action="{% url 'pagar' usuario_actual %}" id="formCliente" onsubmit="notifySuccess(this); return false" method="POST" >
+    {% csrf_token %}
+    <div class="forma">
+
+        
+            <select class="dataTable-selector form-select" id="pago_metodo" name="metodo_pago_id" >
+                {% for lista in listametodo%}
+                <option value="{{lista.codigo_metodo_pago}}" {% if lista.codigo_metodo_pago == datos_act.metodo_de_pago_id%} selected {% endif %}>
+                    {{lista.nombre_metodo_pago}}
+                </option>
+                {% endfor %}
+            </select>
+        
+
+
+
+    </div>
+    <footer>
+        <div class="footer clearfix mb-0 text-muted">
+           
+                <button class="guardar-producto" onclick="checker()">
+                    Cobrar
+                </button>
+        
+
+        </div>
+    </footer>
+</form>
+{%endblock%}

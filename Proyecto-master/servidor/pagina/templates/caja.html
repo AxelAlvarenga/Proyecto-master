@@ -3,45 +3,58 @@
 {%block cabecera%}
 
 <body>
-    <div>
-        <div>
-            <a href="{%url 'retirar_caja' 0  %}">
-                <button class="retirar-dinero">
-                    Retirar dinero
-                </button}>
-            </a>
-           
-        
-            </imput>
-            <a>
-                <form class="abrir-caja-input"  action="{% url 'cerrar_caja' parameters.caja_actual %}" id="formulario" method="POST" style="visibility: hidden;">  
-                            {% csrf_token %} 
-                            <input style="display: none;" name="nombredelusuario" value="{{nombre_completo}}">
-                             
-                            {% for lista in parameters.listausuario %}
-                            <input value="{{lista.cod_usuario}}" {% if lista.cod_usuario == datos_act.nombre_usuario_id%} {{lista.nombre_usuario}} {% endif %} style="visibility: hidden;">
-                            </input>
-                            {% endfor %}
-                            
-                            <input type="text" class="form-control" id="formGroupExampleInput2" name="total_caja" value="{{datos_act.total_caja}}"style="display: none;">
-                            <input type="date" id="fechaActual" name="fecha_caja" value="{{datos_act.fecha_caja}}" style="display: none;">
-                            <input type="text" id="currentTime"  name="hora_caja" value="{{datos_act.hora_caja}}" style="display: none;">
-                            <input style="display: none;" name="tipo_mov" value="3" type="number">
-                        <button class="cerrar-caja" onclick="checker()" type="submit" > 
-                            cerrar caja
-                        </button>
-                </form>
-            </a>
-            
-     
-          
-            <a href="{%url 'abrir_caja' 0 %}">
-                <button class="apertura-caja" >
-                    apertura de caja
-                    </button}>
-            </a>
 
+    <div class="card">
+        <div class="card-header card-header-info">
+          <p>
+          <h4 class="card-title "> Dinero en caja  </h4>
+          <h4 class="card-title "> {{total}}  </h4>
+          </p>
+    <form action="{% url 'movimiento_caja' 1 %}" method="POST">
+        {% csrf_token %} 
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="bmd-label-floating">Deuda Actual</label>
+                <input type="number" id="resultado" class="form-control" name="total" required value="{{total}}">
+            </div>
         </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="bmd-label-floating">Carga para agregar</label>
+                <input type="number" id="numer2" class="form-control" value="0">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="bmd-label-floating">Motivo</label>
+                <input type="text" id="" class="form-control" name="Motivo" required value="">
+            </div>
+        </div>
+    </div>
+      
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-3">
+            <a class="btn btn-success pull-left" onclick="sumar();">Cargar en Caja</a>
+        </div>
+        <div class="col-md-3">
+    
+    
+            <a class="btn btn-danger pull-left" onclick="restar();">Retirar de Caja</a>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-success pull-right">Guardar Cambios </button>
+    
+        </div>
+    </div>
+    
+    
+    
+    </form></div>
+
         
        
         <div class="card-body" style="overflow-y:auto;">
@@ -57,7 +70,6 @@
 
                         <th data-sortable="" style="width: 23.2012%;"><a href="#" class="dataTable-sorter">Motivo</a>
                         </th>
-                        <th data-sortable="" style="width: 23.2012%;"><a href="#" class="dataTable-sorter">tipo de mov.</a>
                         </th>
                         <th data-sortable="" style="width: 23.2012%;"><a href="#" class="dataTable-sorter">Entrada</a>
                         </th>
@@ -66,10 +78,10 @@
                        
                     </tr>
                 </thead>
-                {%for lista in parameters.listatabla %}
+                {%for lista in listatabla %}
                     <tr>
                         
-                        {%for usuario in parameters.listausuario %}
+                        {%for usuario in listausuario %}
                         {%if usuario.cod_usuario == lista.nombre_usuario_id%}
                         <td>{{usuario.nombre_usuario}}</td>
                         {%endif%}
@@ -81,9 +93,6 @@
                         {% else %}
                         <td>{{lista.motivo_caja}}</td>
                         {% endif %}
-                        {%if lista.tipo_mov == 1 %}<td>Retirar</td>{% endif %} 
-                        {%if lista.tipo_mov == 2 %}<td>Apertura</td>{% endif %}
-                        {%if lista.tipo_mov == 3 %}<td>cierre</td>{% endif %}
                         {% if lista.entrada_caja == none %}
                         <td>0</td>
                         {% else %}
@@ -105,7 +114,6 @@
         </div>
         <div>
           
-            <label data-sortable="" style="width: 23.2012%;" id="total_caja" onfocusout="suma(this)">Total:</label>
         </div>  
     </div>
 </body>
@@ -140,6 +148,34 @@
     var x = document.getElementById("entrada_caja")
     console.log(x)
 </script>
+<script>
+    // si la respuesta que se espera es sumar
+    function sumar(){
+        var numero1 = document.getElementById('resultado').value;
+        var numero2 = document.getElementById('numer2').value;
+  
+        if(numero1!=='' && numero2!==''){
+            var suma = (parseFloat(numero1)+parseFloat(numero2));
+            
+            document.getElementById('resultado').value = suma;
+            document.getElementById('resultado2').value = suma;
+        }
+    }
+    </script>
+    <script>
+      // si la respuesta que se espera es sumar
+      function restar(){
+          var numero1 = document.getElementById('resultado').value;
+          var numero2 = document.getElementById('numer2').value;
+    
+          if(numero1!=='' && numero2!==''){
+              var suma = (parseFloat(numero1)-parseFloat(numero2));
+              
+              document.getElementById('resultado').value = suma;
+              document.getElementById('resultado2').value = suma;
+          }
+      }
+  </script>
 
 
 {%endblock%}

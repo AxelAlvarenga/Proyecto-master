@@ -1,24 +1,24 @@
 {%extends 'cabecera.html'%}
 {% load static %}
 {%block cabecera%}
-    <form action="{% url 'cargar_proveedor' proveedor_actual %}" onsubmit="notifySuccess(this); return false" method="POST">
+    <form action="{% url 'cargar_proveedor' parameters.proveedor_actual %}" onsubmit="notifySuccess(this); return false" method="POST">
         {% csrf_token %}
         <div class="forma">
             <label for="nombre-completo">Nombre completo</label>
             <input type="text" class="form-control" id="nombre-completo" name="nombre_proveedor"
-                value="{{datos_act.nombre_proveedor}}"required>
+                value="{{parameters.datos_act.nombre_proveedor}}"required>
 
             <label for="ruc">Ruc</label>
             <input type="text" class="form-control" id="ruc" name="ruc_proveedor"
-                value="{{datos_act.ruc_proveedor}}"required>
+                value="{{parameters.datos_act.ruc_proveedor}}"required>
 
             <label for="Telefono">Telefono</label>
             <input type="text" class="form-control" id="Telefono" name="Telefono_proveedor"
-                value="{{datos_act.Telefono_proveedor}}"required>
+                value="{{parameters.datos_act.Telefono_proveedor}}"required>
 
             <label for="Direccion">Direccion</label>
             <input type="text" class="form-control" id="Direccion" name="direccion_proveedor"
-                value="{{datos_act.direccion_proveedor}}" required>
+                value="{{parameters.datos_act.direccion_proveedor}}" required>
 
 
         </div>
@@ -60,7 +60,7 @@
 
                         </thead>
 
-                        {%for lista in listaproveedor%}
+                        {%for lista in parameters.listaproveedor%}
                             <tr>
 
                                 <td>{{lista.nombre_proveedor}}</td>

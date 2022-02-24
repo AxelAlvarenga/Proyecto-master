@@ -24,7 +24,7 @@
             </div>
             <select class="dataTable-selector form-select" name="categoria_productos">
                 {% for categoria in parameters.listacategoria%}
-                <option value="{{parameters.categoria.codigo_categoria}}" {% if categoria.codigo_categoria == datos_act.categoria_productos %} selected {% endif %}>
+                <option value="{{categoria.codigo_categoria}}" {% if categoria.codigo_categoria == datos_act.categoria_productos %} selected {% endif %}>
                     {{categoria.nombre_categoria}}
                 </option>
                 {% endfor %}

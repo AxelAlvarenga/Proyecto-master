@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from pagina.models import *
 from django.views.generic import ListView
 from datetime import date
+import datetime
+
 
 
 
@@ -35,19 +37,22 @@ def login(request):
 
 def validar(request, pageSuccess , parameters={}):
     if request.session.get("cod_usuario"):
-        if (request.session.get("tipo_usuario") == 2) and ((pageSuccess == 'cargar_cliente.html')) and ((pageSuccess == 'cargar_compra.html')) :
-            return render(request, "reportes_cliente.html", {"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario"), "mensaje": "Este usuario no cuenta con los privilegios suficientes"})
+        if (request.session.get("tipo_usuario") == 2) and ((pageSuccess == 'cargar_cliente.html') or (pageSuccess == 'cargar_compra.html') or (pageSuccess == 'cargar_proveedor.html')) :
+            return render(request, "error_acceso.html", {"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario"), "mensaje": "Este usuario no cuenta con los privilegios suficientes"})
         else: 
             return render(request, pageSuccess, {"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario"), "parameters": parameters})
     else:
         return render(request, 'login.html') 
 
-          
+ 
+
 def inicio(request):
     if request.session.get("cod_usuario"):
         return render(request,"index.html",{"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario")})
     else:
         return redirect('login')
+def error_acceso(request):
+        return render(request,"error_acceso.html",{"nombre_completo": request.session.get("nombredelusuario"),"tipo_usuario": request.session.get("tipo_usuario")})
 
 
 def salir(request):
@@ -205,13 +210,13 @@ def reportescliente(request, usuario_actual=0):
                 return validar(request, "reportes_cliente.html", {"datos_act":datos_usuario, "usuario_actual":usuario_actual,"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo,"listaaudicl":listaaudicl,"listaaudiprod":listaaudiprod,"listaaudiprov":listaaudiprov})
             else:
                 return validar(request, "reportes_cliente.html", {"nombre_completo":request.session.get("nombredelusuario"),"listatabla":listatabla,"listacliente":listacliente,"listametodo":listametodo,"listaaudicl":listaaudicl,"listaaudiprod":listaaudiprod,"listaaudiprov":listaaudiprov})
-        # if request.method=="POST":
-        #     if usuario_actual!=0:
-        #         usuario_actual=venta.objects.get(codigo_cliente_venta_id=usuario_actual)
-        #         usuario_actual.metodo_de_pago_id=request.POST.get("metodo")
-        #         usuario_actual.save() 
-
-        return redirect ("../reportes_cliente")
+        if request.method=="POST":
+            if usuario_actual!=0:
+                usuario_actual=venta.objects.get(codigo_cliente_venta_id=usuario_actual)
+                usuario_actual.metodo_de_pago_id=request.POST.get("metodo")
+                usuario_actual.save() 
+            else:
+                return redirect ("../reportes_cliente")
     else:
          return redirect('login')    
 
@@ -260,10 +265,10 @@ def editproveedor(request, proveedor_actual=0):
             prov_actual=proveedor.objects.filter(codigo_proveedor=proveedor_actual).exists()
             if prov_actual:
                 datos_proveedor=proveedor.objects.filter(codigo_proveedor=proveedor_actual).first()
-                return render(request, 'cargar_proveedor.html',
+                return validar(request, 'cargar_proveedor.html',
                 {"datos_act":datos_proveedor, "proveedor_actual":proveedor_actual, "titulo":"Editar Usuario","listaproveedor":listaproveedor})
             else:
-                return render(request, "cargar_proveedor.html", {"nombre_completo":request.session.get("nombredelusuario"), "proveedor_actual":proveedor_actual, "titulo":"Cargar Usuario","listaproveedor":listaproveedor})
+                return validar(request, "cargar_proveedor.html", {"nombre_completo":request.session.get("nombredelusuario"), "proveedor_actual":proveedor_actual, "titulo":"Cargar Usuario","listaproveedor":listaproveedor})
 
         if request.method=="POST":
             if proveedor_actual==0:
@@ -341,6 +346,7 @@ def punto_venta(request):
             iva=request.POST.get('iva10_factura_venta'),
             metodo_de_pago_id=request.POST.get('metodo_pago'))
             factura_venta_nueva.save()
+        
 
         error = 'No hay error!'
         response = JsonResponse({'error':error})
@@ -353,12 +359,18 @@ def punto_venta(request):
 def venta_detalle(request):
     if request.method == "POST":
         id_ultima_factura=venta.objects.all().last().codigo_venta
+        cod_produc=request.POST.get('id_producto_id')
+        id_actual_producto=producto.objects.get(codigo_productos=cod_produc).codigo_productos
 
         factura_venta_deta=detalle_venta(venta_id=int(id_ultima_factura), 
         producto_detalle_id=request.POST.get('id_producto_id'),
         cantidad_detalle=request.POST.get('cant_producto'),
         subtotal=request.POST.get('subtotal_factura_venta'))
         factura_venta_deta.save()
+        
+        datos_producto=producto.objects.get(codigo_productos=cod_produc)
+        datos_producto.cantidad_productos=datos_producto.cantidad_productos - int(request.POST.get('cant_producto'))
+        datos_producto.save()
 
     error = 'No hay error!'
     response = JsonResponse({'error':error})
@@ -461,35 +473,123 @@ def cerrar_caja(request, caja_actual=0):
         listaventa=venta.objects.all()
         listausuario=Usuarios.objects.all()
         if request.method=="GET":
-            caj_actual=caja.objects.filter(codigo_caja=caja_actual).exists()
-            if caj_actual:
-                datos_caja=caja.objects.filter(codigo_caja=caja_actual).first()
-                return validar(request, 'caja.html',
-                {"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listatabla":listatabla,"listausuario":listausuario,"listaventa":listaventa})
-            else:
-                return validar(request, "caja.html", {"nombre_completo":request.session.get("nombredelusuario"), "caja_actual":caja_actual, "titulo":"Cargar Usuario","listatabla":listatabla,"listausuario":listausuario, "listaventa":listaventa})
+            datos_caja=cajaDinero.objects.filter(codigo_caja_dinero=1).first()
+            total=datos_caja.Caja1
+
+            return render(request, 'caja.html',
+                {"nombre_completo":request.session.get("nombredelusuario"),"datos_act":datos_caja, "caja_actual":caja_actual, "titulo":"Editar Usuario","listatabla":listatabla,"listausuario":listausuario,"listaventa":listaventa,"total":total})
 
         if request.method=="POST":
-            datos_usuario=Usuarios.objects.filter(nombre_usuario=request.POST.get('nombredelusuario')).first()
             
-            if caja_actual==0:
+            datos_caja=cajaDinero.objects.filter(codigo_caja_dinero=1).first()
+            aux2=float(datos_caja.Caja1)
+            nuevo=float(request.POST.get('total'))
+            if nuevo>datos_caja.Caja1:
                 caja_nuevo=caja(codigo_caja=request.POST.get('codigo_caja'),
-                nombre_usuario_id=getattr(datos_usuario, "cod_usuario"),
+                nombre_usuario_id=request.session.get("cod_usuario"),
                 tipo_mov=request.POST.get('tipo_mov'),
-                motivo_caja=request.POST.get('motivo_caja'),
-                fecha_caja=request.POST.get('fecha_caja'),
-                hora_caja=request.POST.get('hora_caja'),
-                entrada_caja=request.POST.get('entrada_caja'),
-                total_caja=request.POST.get('total_caja'),
-                salida_caja=request.POST.get('salida_caja'))
+                motivo_caja=request.POST.get('Motivo'),
+                fecha_caja=datetime.datetime.now(),
+                hora_caja=datetime.datetime.now(),
+                entrada_caja=nuevo-aux2,
+                total_caja=request.POST.get('total'))
                 caja_nuevo.save()
+                datos_caja.Caja1=request.POST.get('total')
+                datos_caja.save()
+            else:
+                if nuevo<datos_caja.Caja1:
+                    caja_nuevo=caja(codigo_caja=request.POST.get('codigo_caja'),
+                    nombre_usuario_id=request.session.get("cod_usuario"),
+                    tipo_mov=request.POST.get('tipo_mov'),
+                    motivo_caja=request.POST.get('Motivo'),
+                    fecha_caja=datetime.datetime.now(),
+                    hora_caja=datetime.datetime.now(),
+                    salida_caja=float(datos_caja.Caja1)-float(request.POST.get('total')),
+                    total_caja=request.POST.get('total'))
+                    caja_nuevo.save()
+                    datos_caja.Caja1=request.POST.get('total')
+                    datos_caja.save()
+                return redirect(cerrar_caja,1)
 
-            return redirect("../movimiento_caja")   
+               
+
+                
+
+            return redirect("../movimiento_caja/1")   
     else:
             return redirect('login')
 
+def pagar(request, usuario_actual=0):
+    if request.session.get("cod_usuario"):
+        listatabla=venta.objects.all()
+        listametodo=metodo_pago.objects.all()
+        listausuario=Usuarios.objects.all()
+        if request.method=="GET":
+            usu_actual=venta.objects.filter(codigo_venta = usuario_actual).exists()
+            if usu_actual:
+                datos_usuario=venta.objects.filter(codigo_venta=usuario_actual).first()
+                return render(request, 'pagar.html',
+                {"datos_act":datos_usuario, "usuario_actual":usuario_actual, "titulo":"Editar Usuario", "listatabla":listatabla,"listametodo":listametodo,"listausuario":listausuario})
+            else:
+                return render(request, "pagar.html", {"nombre_completo":request.session.get("nombredelusuario"), "usuario_actual":usuario_actual, "titulo":"Modificar Usuario" ,"listatabla":listatabla,"listametodo":listametodo,"listausuario":listausuario})
+
+        if request.method=="POST":
+            if usuario_actual==0:
+                usuario_nuevo=venta(codigo_venta=request.POST.get('codigo_venta'),
+                metodo_de_pago_id=request.POST.get('metodo_pago_id')
+                
+                )
+
+                usuario_nuevo.save()
+            else:
+                usuario_actual=venta.objects.get(codigo_venta=usuario_actual)
+                usuario_actual.metodo_de_pago_id=request.POST.get("metodo_pago_id")
+                
+                usuario_actual.save() 
+
+            return redirect ("../reportes_cliente")
+        else:
+            return redirect('login')
 
 
-
-
-
+def Dinero_caja(request,cod_caja=0):
+    if request.session.get("cod_usuario"):
+        if request.method=="GET":
+            datos_usuario=usuarios1.objects.filter(cod_usuario=request.session.get("cod_usuario")).first()
+            nombre= datos_usuario.usuario
+            dato_caja=cajaDinero.objects.filter(codigo_caja_dinero=1).first()
+            Cantidad=dato_caja.Caja1
+            listatabla=caja.objects.all()
+            return render(request, "Caja.html",{"nombre":nombre,"listatabla":listatabla,"Cantidad":Cantidad,"mensaje_error":"Error!!! no posee permiso para esta operacion."})
+        if request.method=="POST":
+            dato_caja=cajaDinero.objects.filter(codigo_caja_dinero=1).first()
+            nuevo=float(request.POST.get('dinero'))
+            if request.session.get("tipo_usuario")=='Administrador':
+                aux=float(request.POST.get('dinero'))
+                aux2=float(dato_caja.Caja1)
+                if nuevo>dato_caja.Caja1:
+                    caja_nueva=caja( 
+                    hora_caja=datetime.datetime.now(),
+                    
+                    motivo_caja=request.POST.get('Motivo'),
+                    entrada_caja=aux-aux2,
+                    nombre_usuario=request.session.get("nombre_completo"))
+                    caja_nueva.save()
+                    dato_caja.Caja1=request.POST.get('dinero')
+                    dato_caja.save()
+                else:
+                    if nuevo<dato_caja.Caja1:
+                        caja_nueva=caja( 
+                        hora_caja=datetime.datetime.now(),
+                        motivo_caja=request.POST.get('Motivo'),
+                        salida_caja=float(dato_caja.Caja1)-float(request.POST.get('dinero')),
+                        nombre_usuario=request.session.get("nombre_completo"))
+                        caja_nueva.save()
+                        dato_caja.Caja1=request.POST.get('dinero')
+                        dato_caja.save()
+                return redirect(Dinero_caja,1)
+                
+            else:
+                return render(request, "error.html",{"nombre":nombre,"mensaje_error":"Error!!! no posee permiso para esta operacion."})
+    else:
+        return redirect("inicio")

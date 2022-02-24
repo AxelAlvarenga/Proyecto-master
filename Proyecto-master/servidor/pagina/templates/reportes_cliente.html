@@ -35,15 +35,20 @@
                                                     <td>{{cliente.nombre_cliente}}</td>
                                                     {%endif%}
                                                     {%endfor%}
+                                                    {% if lista.codigo_cliente_venta_id == NULL %}
+                                                    <td>Casual</td>
+                                                    {%endif%}
+
+
                                                     <td>{{lista.fecha_venta}}</td>
                                                     <td>{{lista.total}}</td>
                                                     <td>
                                                         <form class="" action="{% url 'reportes_cliente' %}" method="POST">
                                                             {% csrf_token %}
                                                             <input type="number" name="metodo" value="2" style="display: none;">
-                                                            {%if lista.metodo_de_pago_id == 2%}
+                                                            {%if lista.metodo_de_pago_id == 1%}
                                                             
-                                                                <a href="{% url 'reportes_cliente'%}" class="text-secondary font-weight-bold text-xs"
+                                                                <a href="{% url 'pagar' lista.codigo_venta %}" class="text-secondary font-weight-bold text-xs"
                                                                     data-toggle="tooltip" data-original-title="Edit user" onclick="checker()">
                                                                     pagar libreta
                                                                 </a>
