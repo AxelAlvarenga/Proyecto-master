@@ -108,7 +108,6 @@
                                         <table class="table table-flush dataTable align-items-center" id="item">
                                             <thead>
                                                 <tr>
-                                                    <th>codigo</th>
                                                     <th>Nombre</th>
                                                     <th>Precio</th>
                                                     <th>Stock</th>
@@ -119,7 +118,7 @@
                                             <tbody>
                                                 {%for lista in parameters.listatabla%}
                                                 <tr class="item">
-                                                    <td class="item-cod">{{lista.codigo_productos}}</td>
+                                                    <td class="item-cod" style="display: none;">{{lista.codigo_productos}}</td>
                                                     <td class="item-title">{{lista.nombre_productos}}</td>
                                                     <td class="item-price">{{lista.precioventa_productos}}</td>
                                                     <td>{{ lista.cantidad_productos }}</td>
