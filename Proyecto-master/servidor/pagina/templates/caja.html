@@ -7,7 +7,7 @@
     <div class="card">
         <div class="card-header card-header-info">
           <p>
-          <h4 class="card-title "> Dinero en caja  </h4>
+          <h4 class="card-title "> Capital  </h4>
           <h4 class="card-title "> {{total}}  </h4>
           </p>
     <form action="{% url 'movimiento_caja' 1 %}" method="POST">
@@ -23,7 +23,7 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label class="bmd-label-floating">Carga para agregar</label>
+                <label class="bmd-label-floating">Entrada/Salida</label>
                 <input type="number" id="numer2" class="form-control" value="0">
             </div>
         </div>
@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-3">
-            <a class="btn btn-success pull-left" onclick="sumar();">Cargar en Caja</a>
+            <a class="btn btn-success pull-left" onclick="sumar();">Realizar Operacion</a>
         </div>
         <div class="col-md-3">
     
@@ -66,7 +66,7 @@
                         </th>
                         <th data-sortable="" style="width: 23.2012%;"><a href="#" class="dataTable-sorter">Fecha</a>
                         </th>
-                        <th data-sortable="" style="width: 23.2012%;"><a href="#" class="dataTable-sorter">Hora</a></th>
+                      
 
                         <th data-sortable="" style="width: 23.2012%;"><a href="#" class="dataTable-sorter">Motivo</a>
                         </th>
@@ -87,7 +87,7 @@
                         {%endif%}
                         {%endfor%}
                         <td>{{lista.fecha_caja}}</td>
-                        <td>{{lista.hora_caja}}</td>
+                        
                         {% if lista.motivo_caja == null %}
                         <td>--------</td>
                         {% else %}

@@ -65,8 +65,11 @@
 
                         {%for lista in listatabla%}
                         <tr>
-
-                            <td>{{lista.cod_usuario}}</td>
+                            {% if lista.tipo_usuario == 1 %}
+                            <td>Administrador</td>
+                            {%else%}
+                            <td>Empleado</td>
+                            {%endif%}
                             <td>{{lista.nombre_completo_usuario}}</td>
                             <td>{{lista.nombre_usuario}}</td>
                             
