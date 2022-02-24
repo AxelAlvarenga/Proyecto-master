@@ -252,7 +252,7 @@
    function traerCliente(event) { //event es el input donde se carga el valor
         var flag = false
         var nCliente = document.getElementById("nombre_cliente") //traigo el label que se va a modificar con el nombre del cliente
-        {% for cliente in parameters.listacliente %}
+        {% for cliente  in parameters.listacliente %}
             var ci_cliente = "{{cliente.codigo_cliente}}"   //se trae cedula del cliente
 
             if(event.value == ci_cliente) { //se compara si las cedulas de la base de datos coincide con el del input
